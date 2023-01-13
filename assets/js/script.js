@@ -1,3 +1,19 @@
+var coordinates = {}
+
+function getLocation(city) { 
+  var apikey = "e5e80f690a1de46cd1c48d028667801f";
+  var requestUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apikey}&units=imperial`;
+  
+  fetch(requestUrl)
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+    coordinates = data.city.coord
+    console.log(coordinates)
+  })
+}
+
 function tmEvents(){
 //Brad Coleman
 var apiKey ='nPYUXzYriSK7f0xcD6RYhwFUMGiFgMgr'
