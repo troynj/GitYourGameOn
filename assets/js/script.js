@@ -78,6 +78,7 @@ function bdlApi(playerId) {
     })
     .then((stats) => {
       console.log(stats);
+      getPlayerStats(stats);
     });
 }
 
@@ -89,5 +90,19 @@ function getTeamStats(inputTeam) {
 
 
 
-getTeamStats('GSW');
+getTeamStats('GSW'); 
 
+function getPlayerStats(stats) {  //PTS, REB, AST, FG%
+  var pts = stats.data[0].pts
+  var offReb = stats.data[0].oreb
+  var defReb = stats.data[0].dreb
+  var ast = stats.data[0].ast
+  var fgp = stats.data[0].fg_pct
+  return [pts, offReb, defReb, ast, fgp]
+}
+
+function dispPlayerStats() {
+  //create element
+  //set attr
+  //append elem
+} // test push
