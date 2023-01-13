@@ -105,4 +105,4 @@ function dispPlayerStats() {
   //create element
   //set attr
   //append elem
-}
+} // test push
