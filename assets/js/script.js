@@ -52,6 +52,12 @@ function tmBasketball() {
 
 tmBasketball();
 
+
+
+
+
+
+
 // function tmEvents(){
 // //Brad Coleman
 // var apiKey ='nPYUXzYriSK7f0xcD6RYhwFUMGiFgMgr'
@@ -144,29 +150,28 @@ function getTeamStats(inputTeam) {
 }
 
 function getPlayerStats(stats) {
+   console.log(stats);
   //PTS, REB, AST, FG%
-  var pts = stats.data[0].pts;
-  var offReb = stats.data[0].oreb;
-  var defReb = stats.data[0].dreb;
-  var ast = stats.data[0].ast;
+  var pts = (stats.data[0].pts).toFixed(1);
+  var totReb = (stats.data[0].oreb +stats.data[0].dreb).toFixed(1)
+  var ast = (stats.data[0].ast).toFixed(1);
   var fgp = ((stats.data[0].fg_pct)*100).toFixed(1);
   
   return {
-    Points: pts,
-    "Offensive Rebounds": offReb,
-    "Defensive Rebounds": defReb,
-    Assists: ast,
-    "Field Goal %": fgp + "%",
+    PTS: pts,
+    "REB: ": totReb,
+    AST: ast,
+    "FG%": fgp + "%",
   };
 }
 
-function displayPlayerStats(playerStatArray) {
-  console.log(playerStatArray);
+function displayPlayerStats(pStatObj) {
+  // console.log(pStatObj);
   //Creating an element
   var pstatsUl = $("<ul>");
   // Append that element to the Div tag with ID = "player-stats-card"
   $("#player-stats-card").append(pstatsUl);
-  Object.entries(playerStatArray).forEach(([key,value]) => {
+  Object.entries(pStatObj).forEach(([key,value]) => {
     //create element
     var listEl = $("<li>");
     //set
