@@ -20,6 +20,7 @@ function getLocation(city) {
 //_embedded.events[0]._embedded.attractions[1].images[0].url -- away icon
 //_embedded.events[0]._embedded.attractions[1].images[1].url -- diff size away icon (goes til [9])
 
+
 function tmBasketball() {
   const start = new Date(Date.UTC(2023, 0, 15))
   const end = new Date(Date.UTC(2023, 2, 15))
@@ -76,6 +77,33 @@ tmBasketball();
 // }
 // tmEvents();
 
+//Create elements on page
+var landingSect = document.createElement("div")
+var searchSect = document.createElement("div")
+var resultSect = document.createElement("div")
+//Set attributes to the containers
+// landingSect.setAttribute("")
+// searchSect.setAttribute("")
+// resultSect.setAttribute("")
+// append containers
+document.body.appendChild(landingSect);
+document.body.appendChild(searchSect);
+document.body.appendChild(resultSect);
+
+// function popTeamSelect() { //function iterate through 'nbaTeams'  + create checkboxes (discuss dropdown option)
+  
+// }
+
+function popGameListing() {  //function to show TM results w/ dates and headline
+  var gameList = createElement("div");
+  for (var i=0; i<5; i++) {
+     // Look at ticketmaster data and append the titles
+
+  var selectBtn = document.createElement("button");
+  selectBtn.setAttribute("")
+  }
+
+}
 //================= BALL DONT LIE API ============================//
 
 var nbaTeams = {
