@@ -153,13 +153,19 @@ var nbaTeams = {
 
 var dataType = ["players", "stats", "teams", "season_averages"];
 
+console.log(dataType[3])
+
+
 //fetch player stats
-function bdlApi(playerId) {
+function bdlApi(type,playerId) {
   var baseUrl = "https://www.balldontlie.io/api/v1/";
   // var requestUrl = `${baseUrl}${dataType[type]}?page=${pageNum}${seasonStr}${perPageStr}`;
   // var requestUrl = `${baseUrl}${dataType[type]}${perPageStr}&page=${pageNum}&search=${player}`
-  var requestUrl = `${baseUrl}${dataType[3]}?player_ids[]=${playerId}`;
+  // var requestUrl = `${baseUrl}${dataType[type]}?player_ids[]=${playerId}`;
 
+  var requestUrl = `${baseUrl}${dataType[type]}?player_ids[]=${playerId}`;
+
+  console.log(requestUrl)
   fetch(requestUrl)
     .then((response) => {
       return response.json();
@@ -171,27 +177,41 @@ function bdlApi(playerId) {
 }
 
 function getTeamStats(inputTeam) {
-  for (var i = 0; i < 3; i++) {
-    var id = nbaTeams[inputTeam][i];
-    bdlApi(id);
-  }
+  // for (var i = 0; i < 3; i++) {
+  //   var id = nbaTeams[inputTeam][i];
+  //   bdlApi(3,id);
+  // }
+// For each element within the array, call the bdlapi and pass datatype 3 and the element. 
+  nbaTeams[inputTeam].forEach((el) => {bdlApi(3,el)})
+
 }
 
 function getPlayerStats(stats) {
    console.log(stats);
   //PTS, REB, AST, FG%
   var pts = (stats.data[0].pts).toFixed(1);
-  var totReb = (stats.data[0].oreb +stats.data[0].dreb).toFixed(1)
+  var totReb = (stats.data[0].oreb + stats.data[0].dreb).toFixed(1)
   var ast = (stats.data[0].ast).toFixed(1);
   var fgp = ((stats.data[0].fg_pct)*100).toFixed(1);
   
   return {
     PTS: pts,
-    "REB: ": totReb,
+    REB: totReb,
     AST: ast,
     "FG%": fgp + "%",
   };
 }
+
+// //Get names of players in nbaTeam from the bld/teams api
+// function getplayerNames(inputTeam) {
+//   for (var i = 0; i < 3; i++) {
+//     var id = nbaTeams[inputTeam][i];
+//     var type = 0
+//     bdlApi(0, id);
+//   }
+// }
+// getplayerNames("GSW")
+
 
 function displayPlayerStats(pStatObj) {
   // console.log(pStatObj);
