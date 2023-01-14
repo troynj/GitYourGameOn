@@ -11,19 +11,24 @@ function getLocation(city) {
     .then((data) => {
       coordinates = data.city.coord;
       console.log(coordinates);
-      tmBasketball(coordinates)
+      tmBasketball(coordinates);
     });
 }
+
+//_embedded.events[0].name -- home vs away
+// home icon
+//_embedded.events[0]._embedded.attractions[1].images[0].url -- away icon
+//_embedded.events[0]._embedded.attractions[1].images[1].url -- diff size away icon (goes til [9])
 
 function tmBasketball() {
   var apiKey = `9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
   var baseUrl = `https://app.ticketmaster.com`;
   // var basketball = `/discovery/v2/classifications/genres/1`
-  var subGenreId = 'KZazBEonSMnZfZ7vFJA'
-  var subGenreId = 'KZazBEonSMnZfZ7vFJA'
-  var events = `/discovery/v2/events/`
-  var keyword = 'Warriors'
-  var latlongStr = `&latlong=${coordinates.lat},${coordinates.lon}`
+  var subGenreId = "KZazBEonSMnZfZ7vFJA";
+  var subGenreId = "KZazBEonSMnZfZ7vFJA";
+  var events = `/discovery/v2/events/`;
+  var keyword = "Warriors";
+  var latlongStr = `&latlong=${coordinates.lat},${coordinates.lon}`;
   var requestUrl = `${baseUrl}${events}?apikey=${apiKey}&keyword=${keyword}`;
   // &subGrenreId=${subGenreId}&pages=1000&per_page=100
   fetch(requestUrl)
@@ -36,7 +41,7 @@ function tmBasketball() {
       //     .subgenres[4].name
       // );
       // console.log(data.page.classifications[1]/segment/_embedded/genres[5]/subgenres[4])
-      console.log(data);
+      // console.log(data);
     });
 }
 
@@ -121,19 +126,17 @@ function bdlApi(playerId) {
       return response.json();
     })
     .then((stats) => {
-      console.log(stats);
-      getPlayerStats(stats);
+      // console.log(stats);
+      displayPlayerStats(getPlayerStats(stats));
     });
 }
 
 function getTeamStats(inputTeam) {
   for (var i = 0; i < 3; i++) {
     var id = nbaTeams[inputTeam][i];
-    //bdlApi(id);
+    bdlApi(id);
   }
 }
-
-getTeamStats("GSW");
 
 function getPlayerStats(stats) {
   //PTS, REB, AST, FG%
@@ -141,12 +144,36 @@ function getPlayerStats(stats) {
   var offReb = stats.data[0].oreb;
   var defReb = stats.data[0].dreb;
   var ast = stats.data[0].ast;
-  var fgp = stats.data[0].fg_pct;
-  return [pts, offReb, defReb, ast, fgp];
+  var fgp = ((stats.data[0].fg_pct)*100).toFixed(1);
+  
+  return {
+    Points: pts,
+    "Offensive Rebounds": offReb,
+    "Defensive Rebounds": defReb,
+    Assists: ast,
+    "Field Goal %": fgp + "%",
+  };
 }
 
-function dispPlayerStats() {
-  //create element
-  //set attr
-  //append elem
+function displayPlayerStats(playerStatArray) {
+  console.log(playerStatArray);
+  //Creating an element
+  var pstatsUl = $("<ul>");
+  // Append that element to the Div tag with ID = "player-stats-card"
+  $("#player-stats-card").append(pstatsUl);
+  Object.entries(playerStatArray).forEach(([key,value]) => {
+    //create element
+    var listEl = $("<li>");
+    //set
+    listEl.text(key  + ": " + value);
+    //append element
+    pstatsUl.append(listEl);
+  });
 } // test push
+
+/*Create event listener when Select Game button is clicked and pass the home 
+team and away team ID's to displayPlayerStats function */
+
+$("#selected-game").click(() => {
+  getTeamStats("GSW");
+});
