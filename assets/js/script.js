@@ -48,7 +48,7 @@ async function tmBasketball(userSelection) {
   //console.log(tmObj.setLocation())
   // &subGrenreId=${subGenreId}&pages=1000&per_page=100
   //var reqUrl = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
-  fetch(tmObj.setReqUrl())
+  fetch(tmObj.reqUrl())
     .then((response) => {
       return response.json();
     })
@@ -56,30 +56,6 @@ async function tmBasketball(userSelection) {
 }
 
 tmBasketball();
-
-// function tmEvents(){
-// //Brad Coleman
-// var apiKey ='nPYUXzYriSK7f0xcD6RYhwFUMGiFgMgr'
-// //Troy Johnson
-// //Daniele Bensan
-
-// var baseUrl = 'https://app.ticketmaster.com'
-// var page = '2'
-// var size = '20'
-// var test = 'page=${page}&size=${size}'
-
-//     var requestUrl = `${baseUrl}/discovery/v2/events.json?apikey=${apiKey}`
-//     fetch(requestUrl)
-//     .then ((response) => {
-//         return response.json()
-
-//     })
-//     .then ((data) =>{
-//         console.log(data)
-
-//     })
-// }
-// tmEvents();
 
 //Create elements on page
 var landingSect = document.createElement("div");
