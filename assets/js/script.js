@@ -1,38 +1,29 @@
-var coordinates = {};
-
-function getLocation(city) {
-  var apikey = "e5e80f690a1de46cd1c48d028667801f";
-  var requestUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apikey}&units=imperial`;
-
-  fetch(requestUrl)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      coordinates = data.city.coord;
-      console.log(coordinates);
-      tmBasketball(coordinates);
-    });
-}
-
 //_embedded.events[0].name -- home vs away
 // home icon
-//_embedded.events[0]._embedded.attractions[1].images[0].url -- away icon
+//_embedded.events[0]._embedded.attraces[0].url -- away icon
 //_embedded.events[0]._embedded.attractions[1].images[1].url -- diff size away icon (goes til [9])
 
+async function tmBasketball(userSelection) {
+  var apiKey = `apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
+  var baseUrl = `https://app.ticketmaster.com/`;
+  var searchBy = `discovery/v2/events.json`;
+  var subGenreId = `subGenreId=KZazBEonSMnZfZ7vFJA`;
+  var keywordStr = `keyword="${userSelection}"`;
+
 function tmBasketball() {
-  const start = new Date(Date.UTC(2023, 0, 15));
-  const end = new Date(Date.UTC(2023, 2, 15));
+  const start = new Date(Date.UTC(2023, 0, 15))
+  const end = new Date(Date.UTC(2023, 2, 15))
+
 
   var apiKey = `9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
   var baseUrl = `https://app.ticketmaster.com`;
   // var basketball = `/discovery/v2/classifications/genres/1`
-  var subGenreId = "KZazBEonSMnZfZ7vFJA";
-  var events = `/discovery/v2/events/`;
-  var keyword = "Warriors";
-  var startDateStr = "&startDateTime=2023-01-14T02:00:00Z";
-  var endDateStr = "&endDateTime=2023-03-15T02:00:00Z";
-  var latlongStr = `&latlong=${coordinates.lat},${coordinates.lon}`;
+  var subGenreId = 'KZazBEonSMnZfZ7vFJA'
+  var events = `/discovery/v2/events/`
+  var keyword = 'Warriors'
+  var startDateStr = '&startDateTime=2023-01-14T02:00:00Z'
+  var endDateStr = '&endDateTime=2023-03-15T02:00:00Z'
+  var latlongStr = `&latlong=${coordinates.lat},${coordinates.lon}`
   var requestUrl = `${baseUrl}${events}?apikey=${apiKey}&keyword=${keyword}&subGenreId=${subGenreId}${startDateStr}${endDateStr}`;
   // &subGrenreId=${subGenreId}&pages=1000&per_page=100
   fetch(requestUrl)
@@ -40,16 +31,17 @@ function tmBasketball() {
       return response.json();
     })
     .then((data) => {
-      // console.log(
-      //   data._embedded.classifications[1].segment._embedded.genres[5]._embedded
-      //     .subgenres[4].name
-      // );
-      // console.log(data.page.classifications[1]/segment/_embedded/genres[5]/subgenres[4])
-      // console.log(data);
+      console.log(data);
     });
 }
 
 tmBasketball();
+
+
+
+
+
+
 
 // function tmEvents(){
 // //Brad Coleman
@@ -141,21 +133,21 @@ var nbaTeams = {
 function bdlStatsApi(playerId) {
   var requestUrl = `https://www.balldontlie.io/api/v1/season_averages?player_ids[]=${playerId}`;
 
-  fetch(requestUrl)
-    .then((response) => {
-      return response.json();
-    })
-    .then((stats) => {
-      /*After the fetch for player stats is completed, a second fetch command and this passes 
-      the data from the first API request on to the second API request for names*/
-      bdlNamesApi(playerId, stats.data[0]);
-      // bdlNamesApi(0,1,playerId, stats.data[0])
-    });
-}
-// This function fetched the player names and combine player stats
-function bdlNamesApi(playerId, playerStats) {
-  var requestUrl = `https://www.balldontlie.io/api/v1/players/${playerId}`;
+var dataType = ["players", "stats", "teams", "season_averages"];
 
+console.log(dataType[3])
+
+
+//fetch player stats
+function bdlApi(type,playerId) {
+  var baseUrl = "https://www.balldontlie.io/api/v1/";
+  // var requestUrl = `${baseUrl}${dataType[type]}?page=${pageNum}${seasonStr}${perPageStr}`;
+  // var requestUrl = `${baseUrl}${dataType[type]}${perPageStr}&page=${pageNum}&search=${player}`
+  // var requestUrl = `${baseUrl}${dataType[type]}?player_ids[]=${playerId}`;
+
+  var requestUrl = `${baseUrl}${dataType[type]}?player_ids[]=${playerId}`;
+
+  console.log(requestUrl)
   fetch(requestUrl)
     .then((response) => {
       return response.json();
@@ -172,21 +164,23 @@ function bdlNamesApi(playerId, playerStats) {
 
 //Get Stats
 function getTeamStats(inputTeam) {
-  // For each element within the array, call the bdlapi and pass datatype 3 and the element.
-  nbaTeams[inputTeam].forEach((el) => {
-    bdlStatsApi(el);
-  });
-  // nbaTeams[inputTeam].forEach((el) => {bdlStatsApi(3,0,el)})
+  // for (var i = 0; i < 3; i++) {
+  //   var id = nbaTeams[inputTeam][i];
+  //   bdlApi(3,id);
+  // }
+// For each element within the array, call the bdlapi and pass datatype 3 and the element. 
+  nbaTeams[inputTeam].forEach((el) => {bdlApi(3,el)})
+
 }
 
 function getPlayerStats(stats) {
+   console.log(stats);
   //PTS, REB, AST, FG%
-  var playerName = stats.first_name + " " + stats.last_name + " (" + stats.position +")";
-  var pts = stats.pts.toFixed(1);
-  var totReb = (stats.oreb + stats.dreb).toFixed(1);
-  var ast = stats.ast.toFixed(1);
-  var fgp = (stats.fg_pct * 100).toFixed(1);
-
+  var pts = (stats.data[0].pts).toFixed(1);
+  var totReb = (stats.data[0].oreb + stats.data[0].dreb).toFixed(1)
+  var ast = (stats.data[0].ast).toFixed(1);
+  var fgp = ((stats.data[0].fg_pct)*100).toFixed(1);
+  
   return {
     Name: playerName,
     PTS: pts,
@@ -196,17 +190,28 @@ function getPlayerStats(stats) {
   };
 }
 
+// //Get names of players in nbaTeam from the bld/teams api
+// function getplayerNames(inputTeam) {
+//   for (var i = 0; i < 3; i++) {
+//     var id = nbaTeams[inputTeam][i];
+//     var type = 0
+//     bdlApi(0, id);
+//   }
+// }
+// getplayerNames("GSW")
+
+
 function displayPlayerStats(pStatObj) {
   //Creating an element
   var pstatsUl = $("<ul>");
   // Append that element to the Div tag with ID = "player-stats-card"
   $("#player-stats-card").append(pstatsUl);
-  Object.entries(pStatObj).forEach(([key, value]) => {
-    //create an element li element to hold each player stat and name
+  Object.entries(pStatObj).forEach(([key,value]) => {
+    //create element
     var listEl = $("<li>");
-    //Set the element with the stat or the name
-    listEl.text(key + ": " + value);
-    //Append the ul element with the stat or name
+    //set
+    listEl.text(key  + ": " + value);
+    //append element
     pstatsUl.append(listEl);
   });
 } 
