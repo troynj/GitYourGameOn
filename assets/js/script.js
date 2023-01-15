@@ -9,7 +9,6 @@ async function tmBasketball(userSelection) {
   var searchBy = `discovery/v2/events.json`;
   var subGenreId = `subGenreId=KZazBEonSMnZfZ7vFJA`;
   var keywordStr = `keyword="${userSelection}"`;
-
   var reqUrl = `${baseUrl}${searchBy}?${apiKey}&${keywordStr}&${subGenreId}`;
 
   fetch(reqUrl)
@@ -50,7 +49,6 @@ function popGameListing() {
     selectBtn.setAttribute("");
   }
 }
-//================= BALL DONT LIE API ============================//
 
 var nbaTeams = {
   LAL: ["237", "472", "117"],
@@ -102,7 +100,19 @@ function bdlApi(type, playerId) {
   // var requestUrl = `${baseUrl}${dataType[type]}${perPageStr}&page=${pageNum}&search=${player}`
   // var requestUrl = `${baseUrl}${dataType[type]}?player_ids[]=${playerId}`;
 
-  var requestUrl = `${baseUrl}${dataType[type]}?player_ids[]=${playerId}`;
+  fetch(requestUrl)
+    .then((response) => {
+      return response.json();
+    })
+    .then((stats) => {
+      /*After the fetch for player stats is completed, a second fetch command and this passes 
+      the data from the first API request on to the second API request for names*/
+      bdlNamesApi(playerId, stats.data[0]);
+    });
+}
+// This function fetched the player names and combine player stats
+function bdlNamesApi(playerId, playerStats) {
+  var requestUrl = `https://www.balldontlie.io/api/v1/players/${playerId}`;
 
   console.log(requestUrl);
   fetch(requestUrl)
@@ -110,8 +120,10 @@ function bdlApi(type, playerId) {
       return response.json();
     })
     .then((stats) => {
-      // console.log(stats);
-      displayPlayerStats(getPlayerStats(stats));
+      //This method merges player stats from Fetch(bdlStatApi) with the stats from Fetch(bdlNamesApi)
+      $.extend(playerStats, stats);
+      //Passes player stats to the displayPlayerStats function
+      displayPlayerStats(getPlayerStats(playerStats));
     });
 }
 
@@ -129,12 +141,15 @@ function getTeamStats(inputTeam) {
 function getPlayerStats(stats) {
   console.log(stats);
   //PTS, REB, AST, FG%
-  var pts = stats.data[0].pts.toFixed(1);
-  var totReb = (stats.data[0].oreb + stats.data[0].dreb).toFixed(1);
-  var ast = stats.data[0].ast.toFixed(1);
-  var fgp = (stats.data[0].fg_pct * 100).toFixed(1);
+  var playerName =
+    stats.first_name + " " + stats.last_name + " (" + stats.position + ")";
+  var pts = stats.pts.toFixed(1);
+  var totReb = (stats.oreb + stats.dreb).toFixed(1);
+  var ast = stats.ast.toFixed(1);
+  var fgp = (stats.fg_pct * 100).toFixed(1);
 
   return {
+    Player: playerName,
     PTS: pts,
     REB: totReb,
     AST: ast,
@@ -156,17 +171,26 @@ function displayPlayerStats(pStatObj) {
   // console.log(pStatObj);
   //Creating an element
   var pstatsUl = $("<ul>");
+  pstatsUl.css("list-style", "none");
   // Append that element to the Div tag with ID = "player-stats-card"
   $("#player-stats-card").append(pstatsUl);
   Object.entries(pStatObj).forEach(([key, value]) => {
     //create element
     var listEl = $("<li>");
-    //set
-    listEl.text(key + ": " + value);
-    //append element
+    //Set the element with the stat or the name
+
+    if (key === "Player") {
+      var titleEl = $("<h3>");
+      titleEl.css("margin-bottom", "0px");
+      titleEl.text(value);
+      listEl.append(titleEl);
+    } else {
+      listEl.text(key + ": " + value);
+    }
+    //Append the ul element with the stat or name
     pstatsUl.append(listEl);
   });
-} // test push
+}
 
 /*Create event listener when Select Game button is clicked and pass the home 
 team and away team ID's to displayPlayerStats function */
