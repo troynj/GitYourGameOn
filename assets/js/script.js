@@ -10,9 +10,23 @@ async function tmBasketball(userSelection) {
   var subGenreId = `subGenreId=KZazBEonSMnZfZ7vFJA`;
   var keywordStr = `keyword="${userSelection}"`;
 
-  var reqUrl = `${baseUrl}${searchBy}?${apiKey}&${keywordStr}&${subGenreId}`;
+function tmBasketball() {
+  const start = new Date(Date.UTC(2023, 0, 15))
+  const end = new Date(Date.UTC(2023, 2, 15))
 
-  fetch(reqUrl)
+
+  var apiKey = `9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
+  var baseUrl = `https://app.ticketmaster.com`;
+  // var basketball = `/discovery/v2/classifications/genres/1`
+  var subGenreId = 'KZazBEonSMnZfZ7vFJA'
+  var events = `/discovery/v2/events/`
+  var keyword = 'Warriors'
+  var startDateStr = '&startDateTime=2023-01-14T02:00:00Z'
+  var endDateStr = '&endDateTime=2023-03-15T02:00:00Z'
+  var latlongStr = `&latlong=${coordinates.lat},${coordinates.lon}`
+  var requestUrl = `${baseUrl}${events}?apikey=${apiKey}&keyword=${keyword}&subGenreId=${subGenreId}${startDateStr}${endDateStr}`;
+  // &subGrenreId=${subGenreId}&pages=1000&per_page=100
+  fetch(requestUrl)
     .then((response) => {
       return response.json();
     })
@@ -21,7 +35,37 @@ async function tmBasketball(userSelection) {
     });
 }
 
-tmBasketball("dallas");
+tmBasketball();
+
+
+
+
+
+
+
+// function tmEvents(){
+// //Brad Coleman
+// var apiKey ='nPYUXzYriSK7f0xcD6RYhwFUMGiFgMgr'
+// //Troy Johnson
+// //Daniele Bensan
+
+// var baseUrl = 'https://app.ticketmaster.com'
+// var page = '2'
+// var size = '20'
+// var test = 'page=${page}&size=${size}'
+
+//     var requestUrl = `${baseUrl}/discovery/v2/events.json?apikey=${apiKey}`
+//     fetch(requestUrl)
+//     .then ((response) => {
+//         return response.json()
+
+//     })
+//     .then ((data) =>{
+//         console.log(data)
+
+//     })
+// }
+// tmEvents();
 
 //Create elements on page
 var landingSect = document.createElement("div");
@@ -85,18 +129,17 @@ var nbaTeams = {
   ORL: ["28", "38017683", "165"],
 };
 
-// var seasonFrom = "2022";
-// var seasonTo = "2022";
-// var seasonStr = `?seasons[]=${seasonFrom}&seasons[]=${seasonTo}`;
-// var perPage = "100";
-// var perPageStr = `?per_page=${perPage}`;
+//This fetch request retrieves the 3 player stats for the selected NBA team
+function bdlStatsApi(playerId) {
+  var requestUrl = `https://www.balldontlie.io/api/v1/season_averages?player_ids[]=${playerId}`;
 
 var dataType = ["players", "stats", "teams", "season_averages"];
 
-// console.log(dataType[3])
+console.log(dataType[3])
+
 
 //fetch player stats
-function bdlApi(type, playerId) {
+function bdlApi(type,playerId) {
   var baseUrl = "https://www.balldontlie.io/api/v1/";
   // var requestUrl = `${baseUrl}${dataType[type]}?page=${pageNum}${seasonStr}${perPageStr}`;
   // var requestUrl = `${baseUrl}${dataType[type]}${perPageStr}&page=${pageNum}&search=${player}`
@@ -104,37 +147,42 @@ function bdlApi(type, playerId) {
 
   var requestUrl = `${baseUrl}${dataType[type]}?player_ids[]=${playerId}`;
 
-  console.log(requestUrl);
+  console.log(requestUrl)
   fetch(requestUrl)
     .then((response) => {
       return response.json();
     })
     .then((stats) => {
-      // console.log(stats);
-      displayPlayerStats(getPlayerStats(stats));
+      //This method merges player stats from Fetch(bdlStatApi) with the stats from Fetch(bdlNamesApi)
+      $.extend(playerStats, stats);
+
+      // console.log(stats)
+      //Passes player stats to the displayPlayerStats function
+      displayPlayerStats(getPlayerStats(playerStats));
     });
 }
 
+//Get Stats
 function getTeamStats(inputTeam) {
   // for (var i = 0; i < 3; i++) {
   //   var id = nbaTeams[inputTeam][i];
   //   bdlApi(3,id);
   // }
-  // For each element within the array, call the bdlapi and pass datatype 3 and the element.
-  nbaTeams[inputTeam].forEach((el) => {
-    bdlApi(3, el);
-  });
+// For each element within the array, call the bdlapi and pass datatype 3 and the element. 
+  nbaTeams[inputTeam].forEach((el) => {bdlApi(3,el)})
+
 }
 
 function getPlayerStats(stats) {
-  console.log(stats);
+   console.log(stats);
   //PTS, REB, AST, FG%
-  var pts = stats.data[0].pts.toFixed(1);
-  var totReb = (stats.data[0].oreb + stats.data[0].dreb).toFixed(1);
-  var ast = stats.data[0].ast.toFixed(1);
-  var fgp = (stats.data[0].fg_pct * 100).toFixed(1);
-
+  var pts = (stats.data[0].pts).toFixed(1);
+  var totReb = (stats.data[0].oreb + stats.data[0].dreb).toFixed(1)
+  var ast = (stats.data[0].ast).toFixed(1);
+  var fgp = ((stats.data[0].fg_pct)*100).toFixed(1);
+  
   return {
+    Name: playerName,
     PTS: pts,
     REB: totReb,
     AST: ast,
@@ -152,25 +200,24 @@ function getPlayerStats(stats) {
 // }
 // getplayerNames("GSW")
 
+
 function displayPlayerStats(pStatObj) {
-  // console.log(pStatObj);
   //Creating an element
   var pstatsUl = $("<ul>");
   // Append that element to the Div tag with ID = "player-stats-card"
   $("#player-stats-card").append(pstatsUl);
-  Object.entries(pStatObj).forEach(([key, value]) => {
+  Object.entries(pStatObj).forEach(([key,value]) => {
     //create element
     var listEl = $("<li>");
     //set
-    listEl.text(key + ": " + value);
+    listEl.text(key  + ": " + value);
     //append element
     pstatsUl.append(listEl);
   });
-} // test push
+} 
 
 /*Create event listener when Select Game button is clicked and pass the home 
 team and away team ID's to displayPlayerStats function */
-
 $("#selected-game").click(() => {
-  getTeamStats("GSW");
+  getTeamStats("LAC");
 });
