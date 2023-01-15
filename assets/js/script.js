@@ -3,7 +3,7 @@
 //_embedded.events[0]._embedded.attraces[0].url -- away icon
 //_embedded.events[0]._embedded.attractions[1].images[1].url -- diff size away icon (goes til [9])
 
-async function tmBasketball(userSelection) {
+function tmBasketball(userSelection) {
   // console.log(userSelection);
   var apiKey = `apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
   var baseUrl = `https://app.ticketmaster.com/`;
@@ -24,8 +24,9 @@ async function tmBasketball(userSelection) {
         //create
         var gameEl = $("<li>");
         var selectBtnEl = $("<button>");
+        //array deconstructor assigned values by splitting value from click event with regex
         var [home, away] = data._embedded.events[i].name.split(
-          /[\sv\s]+[\svs\s]+[[\svs.\s]/
+          /[\sv\s]+[\sv.\s]+[\svs\s]+[\svs.\s]/
         );
 
         //set
@@ -78,13 +79,14 @@ function navigate(jumpFrom, jumpTo) {
 
 function popTeamListing() {
   Object.keys(nbaTeams).forEach((el) => {
-    teamArr = el.split(" ");
     var teamBtn = $("<button>");
+    teamBtn.text(el);
+
+    var teamArr = el.split(" ");
     teamBtn.click(() => {
       tmBasketball(teamArr[teamArr.length - 1]);
       navigate("teams", "games");
     });
-    teamBtn.text(el);
     $("#teams").append(teamBtn);
   });
 }
@@ -199,17 +201,15 @@ function displayPlayerStats(pStatObj) {
   // console.log(pStatObj);
   var teamEl = $("<article>");
   var pstatsUl = $("<ul>");
-  pstatsUl.css("list-style", "none");
   $("#details").append(teamEl);
   teamEl.append(pstatsUl);
-  $("#details").attr("class", "visible");
   // Append that element to the Div tag with ID = "player-stats-card"
   //$("#player-stats-card").append(pstatsUl);
   Object.entries(pStatObj).forEach(([key, value]) => {
     //create element
     var listEl = $("<li>");
     //Set the element with the stat or the name
-
+    
     if (key === "Player") {
       var titleEl = $("<h3>");
       titleEl.css("margin-bottom", "0px");
@@ -220,6 +220,7 @@ function displayPlayerStats(pStatObj) {
     }
     //Append the ul element with the stat or name
     pstatsUl.append(listEl);
+    pstatsUl.css("list-style", "none");
   });
 }
 
