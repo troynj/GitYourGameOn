@@ -4,7 +4,7 @@
 //_embedded.events[0]._embedded.attractions[1].images[1].url -- diff size away icon (goes til [9])
 
 async function tmBasketball(userSelection) {
-  console.log(userSelection);
+  // console.log(userSelection);
   var apiKey = `apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
   var baseUrl = `https://app.ticketmaster.com/`;
   var searchBy = `discovery/v2/events.json`;
@@ -12,38 +12,38 @@ async function tmBasketball(userSelection) {
   var keywordStr = `keyword="${userSelection}"`;
   var reqUrl = `${baseUrl}${searchBy}?${apiKey}&${keywordStr}&${subGenreId}`;
 
-  console.log(reqUrl);
+  // console.log(reqUrl);
   fetch(reqUrl)
     .then((response) => {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      // console.log(data);
       var gameListEl = $("<ul>");
       data._embedded.events.forEach((el, i) => {
         //create
         var gameEl = $("<li>");
         var selectBtnEl = $("<button>");
-        var [home, away] = data._embedded.events[i].name.split(/[\sv\s]+[\svs\s]+[[\svs.\s]/);
-        
+        var [home, away] = data._embedded.events[i].name.split(
+          /[\sv\s]+[\svs\s]+[[\svs.\s]/
+        );
+
         //set
         gameEl.text(data._embedded.events[i].name);
         gameEl.attr("jumpto", "details");
         gameEl.attr("jumpfrom", "games");
         gameEl.attr("home", home.trim());
         gameEl.attr("away", away.trim());
-        console.log(home.trim())
-        console.log(away.trim())
         gameEl.click(() => {
-          console.log(event.currentTarget.attributes[0].value)
-          console.log(event.currentTarget.attributes[1].value)
+          // console.log(event.currentTarget.attributes[0].value);
+          // console.log(event.currentTarget.attributes[1].value);
           navigate(
             event.currentTarget.attributes[0].value,
             event.currentTarget.attributes[1].value
           );
           $("#games").empty();
-          getTeamStats(home);
-          getTeamStats(away);
+          getTeamStats(home.trim());
+          getTeamStats(away.trim());
         });
         selectBtnEl.text("Select");
         //append
@@ -100,50 +100,17 @@ function popTeamListing() {
 //  }
 // }
 
-// var nbaTeams = {
-//   LAL: ["237", "472", "117"],
-//   GSW: ["115", "443", "185"],
-//   PHX: ["57", "367", "22"],
-//   LAC: ["274", "172", "467"],
-//   DAL: ["132", "486", "38017679"],
-//   PLR: ["278", "419", "349"],
-//   DEN: ["246", "335", "375"],
-//   UTA: ["297", "100", "413"],
-//   MEM: ["666786", "231", "3"],
-//   SAC: ["161", "30", "38017688"],
-//   NOP: ["666969", "303", "455"],
-//   MIN: ["3547238", "176", "447"],
-//   HOU: ["17895966", "38017684", " 666849"],
-//   SAS: ["666682", "373", "3547274"],
-//   OKC: ["175", "17896065", "666541"],
-//   BOS: ["434", "70", "219"],
-//   BKN: ["140", "228", "417"],
-//   MIL: ["15", "315", "214"],
-//   NYK: ["73", "387", "399"],
-//   CLE: ["666581", "285", "322"],
-//   CHI: ["268", "125", "27"],
-//   PHI: ["192", "145", "3547254"],
-//   MIA: ["79", "666633", "4"],
-//   TOR: ["416", "17896055", "458"],
-//   WAS: ["378", "37", "265"],
-//   ATL: ["490", "101", "334"],
-//   CHA: ["3547239", "204", "403"],
-//   IND: ["3547245", "452", "210"],
-//   DET: ["17896075", "54", "482"],
-//   ORL: ["28", "38017683", "165"],
-// };
-
 var nbaTeams = {
   "Los Angeles Lakers": ["237", "472", "117"],
   "Golden State Warriors": ["115", "443", "185"],
-  "Pheonix Suns": ["57", "367", "22"],
+  "Phoenix Suns": ["57", "367", "22"],
   "Portland Trail Blazers": ["278", "419", "349"],
-  "Los Angeles Clippers": ["274", "172", "467"],
+  "LA Clippers": ["274", "172", "467"],
   "Dallas Mavericks": ["132", "486", "38017679"],
-  "Denver Nuggests": ["246", "335", "375"],
+  "Denver Nuggets": ["246", "335", "375"],
   "Utah Jazz": ["297", "100", "413"],
   "Memphis Grizzlies": ["666786", "231", "3"],
-  "Sacremento Kings": ["161", "30", "38017688"],
+  "Sacramento Kings": ["161", "30", "38017688"],
   "New Orleans Pelicans": ["666969", "303", "455"],
   "Minnesota Timberwolves": ["3547238", "176", "447"],
   "Houston Rockets": ["17895966", "38017684", " 666849"],
@@ -161,7 +128,7 @@ var nbaTeams = {
   "Washington Wizards": ["378", "37", "265"],
   "Atlanta Hawks": ["490", "101", "334"],
   "Indiana Pacers": ["3547245", "452", "210"],
-  "Charolette Hornets": ["3547239", "204", "403"],
+  "Charlette Hornets": ["3547239", "204", "403"],
   "Detroit Pistons": ["17896075", "54", "482"],
   "Orlando Magic": ["28", "38017683", "165"],
 };
@@ -199,7 +166,7 @@ function bdlNamesApi(playerId, playerStats) {
 
 //Get Stats
 function getTeamStats(inputTeam) {
-  console.log(inputTeam)
+  // console.log(inputTeam);
   // For each element within the array, call the bdlStatsApi and pass datatype 3 and the element.
   nbaTeams[inputTeam].forEach((el) => {
     bdlStatsApi(el);
@@ -208,9 +175,10 @@ function getTeamStats(inputTeam) {
 
 function getPlayerStats(stats) {
   //PTS, REB, AST, FG%
-
+  // console.log(stats);
   var playerName =
     stats.first_name + " " + stats.last_name + " (" + stats.position + ")";
+  var team = stats.team.full_name;
   var pts = stats.pts.toFixed(1);
   var totReb = (stats.oreb + stats.dreb).toFixed(1);
   var ast = stats.ast.toFixed(1);
@@ -218,6 +186,7 @@ function getPlayerStats(stats) {
 
   return {
     Player: playerName,
+    Team: team,
     PTS: pts,
     REB: totReb,
     AST: ast,
@@ -227,11 +196,13 @@ function getPlayerStats(stats) {
 
 function displayPlayerStats(pStatObj) {
   //Creating an element
+  // console.log(pStatObj);
   var teamEl = $("<article>");
   var pstatsUl = $("<ul>");
   pstatsUl.css("list-style", "none");
   $("#details").append(teamEl);
   teamEl.append(pstatsUl);
+  $("#details").attr("class", "visible");
   // Append that element to the Div tag with ID = "player-stats-card"
   //$("#player-stats-card").append(pstatsUl);
   Object.entries(pStatObj).forEach(([key, value]) => {
@@ -251,13 +222,5 @@ function displayPlayerStats(pStatObj) {
     pstatsUl.append(listEl);
   });
 }
-
-/*Create event listener when Select Game button is clicked and pass the home
-team and away team ID's to displayPlayerStats function */
-
-$("#select-game").click(() => {
-  $("#games").empty();
-  getTeamStats("BOS");
-});
 
 popTeamListing();
