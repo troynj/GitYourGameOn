@@ -143,10 +143,13 @@ function getPlayerStats(stats) {
 
 function displayPlayerStats(pStatObj) {
   //Creating an element
+  var teamEl = $("<article>")
   var pstatsUl = $("<ul>");
   pstatsUl.css("list-style", "none");
+  $("#match-container").append(teamEl)
+  teamEl.append(pstatsUl)
   // Append that element to the Div tag with ID = "player-stats-card"
-  $("#player-stats-card").append(pstatsUl);
+  //$("#player-stats-card").append(pstatsUl);
   Object.entries(pStatObj).forEach(([key, value]) => {
     //create element
     var listEl = $("<li>");
@@ -167,6 +170,8 @@ function displayPlayerStats(pStatObj) {
 
 /*Create event listener when Select Game button is clicked and pass the home 
 team and away team ID's to displayPlayerStats function */
-$("#selected-game").click(() => {
-  getTeamStats("LAC");
+
+$("#selected-match").click(() => {
+  $("#match-container").empty()
+  getTeamStats("BOS");
 });
