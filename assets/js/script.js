@@ -9,24 +9,10 @@ async function tmBasketball(userSelection) {
   var searchBy = `discovery/v2/events.json`;
   var subGenreId = `subGenreId=KZazBEonSMnZfZ7vFJA`;
   var keywordStr = `keyword="${userSelection}"`;
+  var reqUrl = `${baseUrl}${searchBy}?${apiKey}&${keywordStr}&${subGenreId}`;
 
-function tmBasketball() {
-  const start = new Date(Date.UTC(2023, 0, 15))
-  const end = new Date(Date.UTC(2023, 2, 15))
+  fetch(reqUrl)
 
-
-  var apiKey = `9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
-  var baseUrl = `https://app.ticketmaster.com`;
-  // var basketball = `/discovery/v2/classifications/genres/1`
-  var subGenreId = 'KZazBEonSMnZfZ7vFJA'
-  var events = `/discovery/v2/events/`
-  var keyword = 'Warriors'
-  var startDateStr = '&startDateTime=2023-01-14T02:00:00Z'
-  var endDateStr = '&endDateTime=2023-03-15T02:00:00Z'
-  var latlongStr = `&latlong=${coordinates.lat},${coordinates.lon}`
-  var requestUrl = `${baseUrl}${events}?apikey=${apiKey}&keyword=${keyword}&subGenreId=${subGenreId}${startDateStr}${endDateStr}`;
-  // &subGrenreId=${subGenreId}&pages=1000&per_page=100
-  fetch(requestUrl)
     .then((response) => {
       return response.json();
     })
@@ -94,7 +80,6 @@ function popGameListing() {
     selectBtn.setAttribute("");
   }
 }
-//================= BALL DONT LIE API ============================//
 
 var nbaTeams = {
   LAL: ["237", "472", "117"],
@@ -145,7 +130,19 @@ function bdlApi(type,playerId) {
   // var requestUrl = `${baseUrl}${dataType[type]}${perPageStr}&page=${pageNum}&search=${player}`
   // var requestUrl = `${baseUrl}${dataType[type]}?player_ids[]=${playerId}`;
 
-  var requestUrl = `${baseUrl}${dataType[type]}?player_ids[]=${playerId}`;
+  fetch(requestUrl)
+    .then((response) => {
+      return response.json();
+    })
+    .then((stats) => {
+      /*After the fetch for player stats is completed, a second fetch command and this passes 
+      the data from the first API request on to the second API request for names*/
+      bdlNamesApi(playerId, stats.data[0]);
+    });
+}
+// This function fetched the player names and combine player stats
+function bdlNamesApi(playerId, playerStats) {
+  var requestUrl = `https://www.balldontlie.io/api/v1/players/${playerId}`;
 
   console.log(requestUrl)
   fetch(requestUrl)
@@ -155,8 +152,6 @@ function bdlApi(type,playerId) {
     .then((stats) => {
       //This method merges player stats from Fetch(bdlStatApi) with the stats from Fetch(bdlNamesApi)
       $.extend(playerStats, stats);
-
-      // console.log(stats)
       //Passes player stats to the displayPlayerStats function
       displayPlayerStats(getPlayerStats(playerStats));
     });
@@ -176,13 +171,16 @@ function getTeamStats(inputTeam) {
 function getPlayerStats(stats) {
    console.log(stats);
   //PTS, REB, AST, FG%
-  var pts = (stats.data[0].pts).toFixed(1);
-  var totReb = (stats.data[0].oreb + stats.data[0].dreb).toFixed(1)
-  var ast = (stats.data[0].ast).toFixed(1);
-  var fgp = ((stats.data[0].fg_pct)*100).toFixed(1);
-  
+
+  var playerName =
+    stats.first_name + " " + stats.last_name + " (" + stats.position + ")";
+  var pts = stats.pts.toFixed(1);
+  var totReb = (stats.oreb + stats.dreb).toFixed(1);
+  var ast = stats.ast.toFixed(1);
+  var fgp = (stats.fg_pct * 100).toFixed(1);
+
   return {
-    Name: playerName,
+    Player: playerName,
     PTS: pts,
     REB: totReb,
     AST: ast,
@@ -204,20 +202,31 @@ function getPlayerStats(stats) {
 function displayPlayerStats(pStatObj) {
   //Creating an element
   var pstatsUl = $("<ul>");
+  pstatsUl.css("list-style", "none");
   // Append that element to the Div tag with ID = "player-stats-card"
   $("#player-stats-card").append(pstatsUl);
   Object.entries(pStatObj).forEach(([key,value]) => {
     //create element
     var listEl = $("<li>");
-    //set
-    listEl.text(key  + ": " + value);
-    //append element
+    //Set the element with the stat or the name
+
+    if (key === "Player") {
+      var titleEl = $("<h3>");
+      titleEl.css("margin-bottom", "0px");
+      titleEl.text(value);
+      listEl.append(titleEl);
+    } else {
+      listEl.text(key + ": " + value);
+    }
+    //Append the ul element with the stat or name
     pstatsUl.append(listEl);
   });
-} 
+}
+
 
 /*Create event listener when Select Game button is clicked and pass the home 
 team and away team ID's to displayPlayerStats function */
 $("#selected-game").click(() => {
   getTeamStats("LAC");
 });
+//this is a test
