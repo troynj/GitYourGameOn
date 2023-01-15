@@ -1,92 +1,66 @@
-var coordinates = {};
-
-function getLocation(city) {
+async function getLocation() {
+  var coordinates = {};
+  var city = getCity();
   var apikey = "e5e80f690a1de46cd1c48d028667801f";
   var requestUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apikey}&units=imperial`;
 
-  fetch(requestUrl)
+  await fetch(requestUrl)
     .then((response) => {
       return response.json();
     })
-    .then((data) => {
-      coordinates = data.city.coord;
+    .then(async function (data) {
+      coordinates = await data.city.coord;
       console.log(coordinates);
-      tmBasketball(coordinates);
     });
+
+  return coordinates;
+}
+
+function getCity() {
+  return "dallas";
 }
 
 //_embedded.events[0].name -- home vs away
 // home icon
-//_embedded.events[0]._embedded.attractions[1].images[0].url -- away icon
+//_embedded.events[0]._embedded.attraces[0].url -- away icon
 //_embedded.events[0]._embedded.attractions[1].images[1].url -- diff size away icon (goes til [9])
 
+async function tmBasketball(userSelection) {
+  var tmObj = {
+    requestUrl: `https://app.ticketmaster.com`,
+    apiKey: [`9XshdGRWAPA44uov6ogAAGLaYkru76D3`, `apikey=${this[0]}`],
+    subGenreId: ["KZazBEonSMnZfZ7vFJA", `subGenreId=${this[0]}`],
+    searchBy: ["events", `/discovery/v2/${this[0]}/`],
+    keyword: ["", `keyword=${this[0]}`],
+    startDateTime: ["", `&startDateTime=${this[0]}`],
+    endDateTime: ["", `endDateTime=${this[0]}`],
+  };
 
-function tmBasketball() {
-  const start = new Date(Date.UTC(2023, 0, 15))
-  const end = new Date(Date.UTC(2023, 2, 15))
+  userSelection.forEach(() => {
+    Object.entries(el).forEach(([key, value]) => {
+      tmObj[key][0] = value;
+      tmObj.requestUrl.concat(tmObj[key][1]);
+    });
+  });
 
-
-  var apiKey = `9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
-  var baseUrl = `https://app.ticketmaster.com`;
-  // var basketball = `/discovery/v2/classifications/genres/1`
-  var subGenreId = 'KZazBEonSMnZfZ7vFJA'
-  var events = `/discovery/v2/events/`
-  var keyword = 'Warriors'
-  var startDateStr = '&startDateTime=2023-01-14T02:00:00Z'
-  var endDateStr = '&endDateTime=2023-03-15T02:00:00Z'
-  var latlongStr = `&latlong=${coordinates.lat},${coordinates.lon}`
-  var requestUrl = `${baseUrl}${events}?apikey=${apiKey}&keyword=${keyword}&subGenreId=${subGenreId}${startDateStr}${endDateStr}`;
+  var { lat, lon } = await tmObj.setLocation();
+  console.log(lat, lon);
+  //console.log(tmObj.setLocation())
   // &subGrenreId=${subGenreId}&pages=1000&per_page=100
-  fetch(requestUrl)
+  //var reqUrl = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
+  fetch(tmObj.reqUrl())
     .then((response) => {
       return response.json();
     })
-    .then((data) => {
-      // console.log(
-      //   data._embedded.classifications[1].segment._embedded.genres[5]._embedded
-      //     .subgenres[4].name
-      // );
-      // console.log(data.page.classifications[1]/segment/_embedded/genres[5]/subgenres[4])
-      // console.log(data);
-    });
+    .then((data) => {});
 }
 
 tmBasketball();
 
-
-
-
-
-
-
-// function tmEvents(){
-// //Brad Coleman
-// var apiKey ='nPYUXzYriSK7f0xcD6RYhwFUMGiFgMgr'
-// //Troy Johnson
-// //Daniele Bensan
-
-// var baseUrl = 'https://app.ticketmaster.com'
-// var page = '2'
-// var size = '20'
-// var test = 'page=${page}&size=${size}'
-
-//     var requestUrl = `${baseUrl}/discovery/v2/events.json?apikey=${apiKey}`
-//     fetch(requestUrl)
-//     .then ((response) => {
-//         return response.json()
-
-//     })
-//     .then ((data) =>{
-//         console.log(data)
-
-//     })
-// }
-// tmEvents();
-
 //Create elements on page
-var landingSect = document.createElement("div")
-var searchSect = document.createElement("div")
-var resultSect = document.createElement("div")
+var landingSect = document.createElement("div");
+var searchSect = document.createElement("div");
+var resultSect = document.createElement("div");
 //Set attributes to the containers
 // landingSect.setAttribute("")
 // searchSect.setAttribute("")
@@ -97,18 +71,18 @@ document.body.appendChild(searchSect);
 document.body.appendChild(resultSect);
 
 // function popTeamSelect() { //function iterate through 'nbaTeams'  + create checkboxes (discuss dropdown option)
-  
+
 // }
 
-function popGameListing() {  //function to show TM results w/ dates and headline
+function popGameListing() {
+  //function to show TM results w/ dates and headline
   var gameList = createElement("div");
-  for (var i=0; i<5; i++) {
-     // Look at ticketmaster data and append the titles
+  for (var i = 0; i < 5; i++) {
+    // Look at ticketmaster data and append the titles
 
-  var selectBtn = document.createElement("button");
-  selectBtn.setAttribute("")
+    var selectBtn = document.createElement("button");
+    selectBtn.setAttribute("");
   }
-
 }
 //================= BALL DONT LIE API ============================//
 
@@ -187,13 +161,13 @@ function getTeamStats(inputTeam) {
 }
 
 function getPlayerStats(stats) {
-   console.log(stats);
+  console.log(stats);
   //PTS, REB, AST, FG%
-  var pts = (stats.data[0].pts).toFixed(1);
-  var totReb = (stats.data[0].oreb + stats.data[0].dreb).toFixed(1)
-  var ast = (stats.data[0].ast).toFixed(1);
-  var fgp = ((stats.data[0].fg_pct)*100).toFixed(1);
-  
+  var pts = stats.data[0].pts.toFixed(1);
+  var totReb = (stats.data[0].oreb + stats.data[0].dreb).toFixed(1);
+  var ast = stats.data[0].ast.toFixed(1);
+  var fgp = (stats.data[0].fg_pct * 100).toFixed(1);
+
   return {
     PTS: pts,
     REB: totReb,
@@ -219,11 +193,11 @@ function displayPlayerStats(pStatObj) {
   var pstatsUl = $("<ul>");
   // Append that element to the Div tag with ID = "player-stats-card"
   $("#player-stats-card").append(pstatsUl);
-  Object.entries(pStatObj).forEach(([key,value]) => {
+  Object.entries(pStatObj).forEach(([key, value]) => {
     //create element
     var listEl = $("<li>");
     //set
-    listEl.text(key  + ": " + value);
+    listEl.text(key + ": " + value);
     //append element
     pstatsUl.append(listEl);
   });
