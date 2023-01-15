@@ -1,61 +1,27 @@
-async function getLocation() {
-  var coordinates = {};
-  var city = getCity();
-  var apikey = "e5e80f690a1de46cd1c48d028667801f";
-  var requestUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apikey}&units=imperial`;
-
-  await fetch(requestUrl)
-    .then((response) => {
-      return response.json();
-    })
-    .then(async function (data) {
-      coordinates = await data.city.coord;
-      console.log(coordinates);
-    });
-
-  return coordinates;
-}
-
-function getCity() {
-  return "dallas";
-}
-
 //_embedded.events[0].name -- home vs away
 // home icon
 //_embedded.events[0]._embedded.attraces[0].url -- away icon
 //_embedded.events[0]._embedded.attractions[1].images[1].url -- diff size away icon (goes til [9])
 
 async function tmBasketball(userSelection) {
-  var tmObj = {
-    requestUrl: `https://app.ticketmaster.com`,
-    apiKey: [`9XshdGRWAPA44uov6ogAAGLaYkru76D3`, `apikey=${this[0]}`],
-    subGenreId: ["KZazBEonSMnZfZ7vFJA", `subGenreId=${this[0]}`],
-    searchBy: ["events", `/discovery/v2/${this[0]}/`],
-    keyword: ["", `keyword=${this[0]}`],
-    startDateTime: ["", `&startDateTime=${this[0]}`],
-    endDateTime: ["", `endDateTime=${this[0]}`],
-  };
+  var apiKey = `apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
+  var baseUrl = `https://app.ticketmaster.com/`;
+  var searchBy = `discovery/v2/events.json`;
+  var subGenreId = `subGenreId=KZazBEonSMnZfZ7vFJA`;
+  var keywordStr = `keyword="${userSelection}"`;
 
-  userSelection.forEach(() => {
-    Object.entries(el).forEach(([key, value]) => {
-      tmObj[key][0] = value;
-      tmObj.requestUrl.concat(tmObj[key][1]);
-    });
-  });
+  var reqUrl = `${baseUrl}${searchBy}?${apiKey}&${keywordStr}&${subGenreId}`;
 
-  var { lat, lon } = await tmObj.setLocation();
-  console.log(lat, lon);
-  //console.log(tmObj.setLocation())
-  // &subGrenreId=${subGenreId}&pages=1000&per_page=100
-  //var reqUrl = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
-  fetch(tmObj.reqUrl())
+  fetch(reqUrl)
     .then((response) => {
       return response.json();
     })
-    .then((data) => {});
+    .then((data) => {
+      console.log(data);
+    });
 }
 
-tmBasketball();
+tmBasketball("dallas");
 
 //Create elements on page
 var landingSect = document.createElement("div");
@@ -127,11 +93,10 @@ var nbaTeams = {
 
 var dataType = ["players", "stats", "teams", "season_averages"];
 
-console.log(dataType[3])
-
+// console.log(dataType[3])
 
 //fetch player stats
-function bdlApi(type,playerId) {
+function bdlApi(type, playerId) {
   var baseUrl = "https://www.balldontlie.io/api/v1/";
   // var requestUrl = `${baseUrl}${dataType[type]}?page=${pageNum}${seasonStr}${perPageStr}`;
   // var requestUrl = `${baseUrl}${dataType[type]}${perPageStr}&page=${pageNum}&search=${player}`
@@ -139,7 +104,7 @@ function bdlApi(type,playerId) {
 
   var requestUrl = `${baseUrl}${dataType[type]}?player_ids[]=${playerId}`;
 
-  console.log(requestUrl)
+  console.log(requestUrl);
   fetch(requestUrl)
     .then((response) => {
       return response.json();
@@ -155,9 +120,10 @@ function getTeamStats(inputTeam) {
   //   var id = nbaTeams[inputTeam][i];
   //   bdlApi(3,id);
   // }
-// For each element within the array, call the bdlapi and pass datatype 3 and the element. 
-  nbaTeams[inputTeam].forEach((el) => {bdlApi(3,el)})
-
+  // For each element within the array, call the bdlapi and pass datatype 3 and the element.
+  nbaTeams[inputTeam].forEach((el) => {
+    bdlApi(3, el);
+  });
 }
 
 function getPlayerStats(stats) {
@@ -185,7 +151,6 @@ function getPlayerStats(stats) {
 //   }
 // }
 // getplayerNames("GSW")
-
 
 function displayPlayerStats(pStatObj) {
   // console.log(pStatObj);
