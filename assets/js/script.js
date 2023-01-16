@@ -27,12 +27,16 @@ function tmBasketball(userSelection) {
       data._embedded.events.forEach((el, i) => {
         //create
         var gameEl = $("<li>");
+        // gameEl.css("flex-direction", "row");
         var selectBtnEl = $("<button>");
+        selectBtnEl.addClass("uk-button uk-button-secondary uk-width-1-2");
         //array deconstructor assigned values by splitting value from click event with regex
         // var [home, away] = data._embedded.events[i].name.split(
         //   /[\sv\s]|[\sv.\s]|[\svs\s]|[\svs.\s]/
         // );
-        var [home, away] = setTeamNames(data._embedded.events[i].name);
+
+        var [home, away] = setTeamNames(data._embedded.events[i].name)
+
         home = home?.trim();
         away = away?.trim();
         //home
@@ -43,9 +47,14 @@ function tmBasketball(userSelection) {
         var awayIcon = setIcon(
           data._embedded.events[i]._embedded.attractions[1].images
         );
-
+        var nameContainer = $("<p>");
+        nameContainer.addClass("uk-width-1-2")
+        var gameName = data._embedded.events[i].name;
+        gameEl.append(nameContainer);
         //set
-        gameEl.text(data._embedded.events[i].name);
+        nameContainer.text(gameName);
+        gameEl.append(nameContainer);
+        
         gameEl.attr("jumpto", "details");
         gameEl.attr("jumpfrom", "games");
         //Cannot read properties of undefined (reading 'trim')
@@ -54,6 +63,9 @@ function tmBasketball(userSelection) {
         gameEl.attr("awayTeam", away);
         gameEl.attr("homeIcon", homeIcon);
         gameEl.attr("awayIcon", awayIcon);
+        
+
+
         gameEl.click(() => {
           // console.log(event.currentTarget.attributes[0].value);
           // console.log(event.currentTarget.attributes[1].value);
@@ -66,7 +78,9 @@ function tmBasketball(userSelection) {
           getTeamStats(home, homeIcon);
           getTeamStats(away, awayIcon);
         });
+
         selectBtnEl.text("See Players");
+       
         //append
         $("#games").append(gameListEl);
         gameListEl.append(gameEl);
@@ -122,8 +136,12 @@ function navigate(jumpFrom, jumpTo) {
 function popTeamListing() {
   Object.keys(nbaTeams).forEach((el) => {
     var teamBtn = $("<button>");
-    teamBtn.addClass("uk-background-muted uk-padding");
-    teamBtn.text(el);
+
+    teamBtn.addClass("uk-padding uk-button uk-button-secondary");
+    teamBtn.addClass("uk-flex-center@l");
+    teamBtn.attr("id", "team-select");
+    //teamBtn.addClass("uk-background-muted uk-padding"
+    //teamBtn.text(el);
 
     var teamArr = el.split(" ");
     teamBtn.click(() => {
@@ -180,7 +198,6 @@ function bdlStatsApi(playerId, playerStatsType) {
       // console.log(stats)
       /*After the fetch for player stats is completed, a second fetch command and this passes
      the data from the first API request on to the second API request for names*/
-
       bdlNamesApi(playerId, stats.data[0], playerStatsType);
     });
 }
@@ -199,9 +216,10 @@ function bdlNamesApi(playerId, playerStats, playerStatsType) {
       $.extend(playerStats, stats);
       // console.log(playerStats)
       //Passes player stats to the displayPlayerStats function
-      playerStatsType == "short"
-        ? displayPlayerStats(getPlayerStats(playerStats))
-        : displayPlayerProfile(setPlayerProfile(playerStats));
+      playerStatsType == "short" ?
+        displayPlayerStats(getPlayerStats(playerStats)) :
+        displayPlayerProfile(setPlayerProfile(playerStats));
+
     });
 }
 
@@ -306,6 +324,7 @@ function displayPlayerStats(pStatObj) {
   });
 }
 
+
 /* This function dynamically populates the drop down list of teams by reference the 
   nbaTeams object*/
 function populateTeamList() {
@@ -317,6 +336,7 @@ function populateTeamList() {
   Object.keys(nbaTeams).forEach((el) => {
     var optionListEl = $("<option>");
     optionListEl.attr("value", el);
+    //optionListEl.addClass("")
     optionListEl.text(el);
     playerSelectEl.append(optionListEl);
   });
@@ -333,6 +353,7 @@ function populateTeamList() {
 }
 
 function setPlayerProfile(stats) {
+
   return {
     Name: stats.first_name + " " + stats.last_name,
     Team: stats.team.full_name,

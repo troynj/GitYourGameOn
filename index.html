@@ -6,23 +6,27 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/css/uikit.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/style.css" />
   <title>Document</title>
 </head>
 
 <body>
-
-  <head>
+  <header>
     <nav>
-      <ul>
-        <li>Home</li>
+      <ul class="uk-flex uk-flex-center">
+        <li><a href="">Home</a></li>
         <li><a href="#modal" uk-toggle>Search</a></li>
-        <li jumpto="favorites" jumpfrom="nav">Favorites</li>
+        <li jumpto="favorites" jumpfrom="nav"><a href="">Favorites</a></li>
+
       </ul>
     </nav>
-  </head>
+  </header>
+
   <!-- <button id="myBtn"></button> -->
-  <section id="teams" class="visible uk-child-width-1-5 uk-text-center uk-flex-center "></section>
+  <section id="teams" class="visible uk-child-width-1-6 uk-text-center"></section>
   <section id="games" class="invisible">
   </section>
   <section id="details" class="invisible"></section>
