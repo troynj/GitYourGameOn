@@ -9,10 +9,19 @@ header {
     background-color: rgb(20, 20, 20);
 }
 
+body {
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+}
+
+ul {
+    list-style: none;
+}
 
 nav ul {
     display: inline;
-    list-style: none;
 }
 
 nav li {
@@ -22,7 +31,7 @@ nav li {
 
 }
 
-.visible{
+.visible {
     display: block;
 }
 
@@ -35,13 +44,14 @@ nav li {
     flex-direction: row;
     justify-content: space-around;
 }
-#team-card{
+
+#team-card {
     border-radius: 25px;
     margin: 10px;
 }
 
 
-section ul li article{
+section ul li article {
     margin: 0px;
     padding: 0px
 }
@@ -60,12 +70,21 @@ article {
 }
 
 #team-select {
-    height: 75px;
+    height: 60px;
     margin: 5px;
     border-radius: 5px;
-    opacity: 50%;
+    opacity: 95%;
 
     /* background-color: ; */
+}
+
+#game-card {
+    margin: 40px 40px 40px 40px;
+}
+
+body {
+    -webkit-transition: background-image 0.5s ease-in-out;
+    transition: background-image 0.5s ease-in-out;
 }
 
 

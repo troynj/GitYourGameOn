@@ -6,6 +6,23 @@
 //social media links
 // _embedded.events[0]._embedded.attractions[0].externalLinks
 
+// var bodyBackground = $('body');
+// var backgrounds = new Array(
+//   'url(https://images.unsplash.com/photo-1499754162586-08f451261482?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)',
+//   'url(https://images.unsplash.com/photo-1533923156502-be31530547c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)',
+//   'url(http://placekitten.com/300)',
+//   'url(http://placekitten.com/400)'
+// );
+
+// var current = 0;
+// function nextBackground() {
+//   current++;
+//   current = current % backgrounds.length;
+//   header.css('background-image', backgrounds[current]);
+// }
+// setInterval(nextBackground, 3000);
+// bodyBackground.css('background-image', backgrounds[0]);
+
 function tmBasketball(userSelection) {
   // console.log(userSelection);
   var apiKey = `apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
@@ -22,14 +39,15 @@ function tmBasketball(userSelection) {
     })
     .then((data) => {
       console.log(data);
-
-      var gameListEl = $("<ul>");
+      var gameListEl = $("<div>");
       data._embedded.events.forEach((el, i) => {
         //create
-        var gameEl = $("<li>");
-        // gameEl.css("flex-direction", "row");
+        var gameEl = $("<div>");
+        gameEl.addClass("uk-flex-center")
+        gameEl.css("background-color", "#ffffffd9");
+        gameEl.css("margin","15px 10px");
         var selectBtnEl = $("<button>");
-        selectBtnEl.addClass("uk-button uk-button-secondary uk-width-1-2");
+        selectBtnEl.addClass("uk-button uk-button-secondary");
         //array deconstructor assigned values by splitting value from click event with regex
         // var [home, away] = data._embedded.events[i].name.split(
         //   /[\sv\s]|[\sv.\s]|[\svs\s]|[\svs.\s]/
@@ -48,13 +66,15 @@ function tmBasketball(userSelection) {
           data._embedded.events[i]._embedded.attractions[1].images
         );
         var nameContainer = $("<p>");
-        nameContainer.addClass("uk-width-1-2")
+        // nameContainer.css("display", "inline");
+        nameContainer.addClass("uk-flex-inline");
         var gameName = data._embedded.events[i].name;
         gameEl.append(nameContainer);
         //set
         nameContainer.text(gameName);
+        nameContainer.css("font-size","40px");
         gameEl.append(nameContainer);
-        
+
         gameEl.attr("jumpto", "details");
         gameEl.attr("jumpfrom", "games");
         //Cannot read properties of undefined (reading 'trim')
@@ -63,8 +83,6 @@ function tmBasketball(userSelection) {
         gameEl.attr("awayTeam", away);
         gameEl.attr("homeIcon", homeIcon);
         gameEl.attr("awayIcon", awayIcon);
-        
-
 
         gameEl.click(() => {
           // console.log(event.currentTarget.attributes[0].value);
@@ -78,14 +96,23 @@ function tmBasketball(userSelection) {
           getTeamStats(home, homeIcon);
           getTeamStats(away, awayIcon);
         });
-
+        selectBtnEl.css("float", "right");
         selectBtnEl.text("See Players");
-       
+
         //append
         $("#games").append(gameListEl);
         gameListEl.append(gameEl);
         gameEl.append(selectBtnEl);
+
+
+        // adds game date to games page
+        var gameDate = data._embedded.events[i].dates.start.localDate;
+        console.log(gameDate);
+
+        gameEl.append(gameDate);
       });
+
+
     });
 }
 
@@ -180,7 +207,7 @@ var nbaTeams = {
   "Washington Wizards": ["378", "37", "265"],
   "Atlanta Hawks": ["490", "101", "334"],
   "Indiana Pacers": ["3547245", "452", "210"],
-  "Charlette Hornets": ["3547239", "204", "403"],
+  "Charlotte Hornets": ["3547239", "204", "403"],
   "Detroit Pistons": ["17896075", "54", "482"],
   "Orlando Magic": ["28", "38017683", "165"],
 };
@@ -250,8 +277,12 @@ function getTeamStats(inputTeam, icon) {
   teamEl.attr("team", inputTeam);
   teamEl.css("background-image", `url("${icon}")`);
   teamEl.css("text-align", "center");
-  titleCardEl.css("background-color", "white");
-  titleEl.text(inputTeam);
+  titleCardEl.css("color", "white");
+  titleCardEl.css("-webkit-text-stroke-width", "1px");
+  titleCardEl.css("-webkit-text-stroke-color", "black");
+  titleCardEl.css("background-color", "transparent")
+  titleEl.text(inputTeam)
+
   $("#details").append(teamEl);
   teamEl.append(titleCardEl);
   titleCardEl.append(titleEl);
