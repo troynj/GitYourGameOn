@@ -1,9 +1,25 @@
-section{
+/* section{
     outline: 2px solid black;
+} */
+* {
+    font-family: 'Bebas Neue', cursive;
 }
+
+header {
+    background-color: rgb(20, 20, 20);
+}
+
 
 nav ul {
     display: inline;
+    list-style: none;
+}
+
+nav li {
+    margin-left: 15px;
+    margin-right: 15px;
+    font-size: 60px;
+
 }
 
 .visible{
@@ -24,19 +40,35 @@ nav ul {
     margin: 10px;
 }
 
-ul, li, article{
+
+section ul li article{
     margin: 0px;
     padding: 0px
 }
 
-ul {
+#details ul {
     padding: 10px;
     border-radius: 25px;
 }
-li {
+
+#details li {
     padding: 0 20px;
 }
 
 article {
     padding: 20px;
 }
+
+#team-select {
+    height: 75px;
+    margin: 5px;
+    border-radius: 5px;
+    opacity: 50%;
+
+    /* background-color: ; */
+}
+
+
+/* #gameLi {
+    display: inline;
+} */

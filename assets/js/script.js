@@ -22,21 +22,18 @@ function tmBasketball(userSelection) {
     })
     .then((data) => {
       console.log(data);
-
-
-
-
-
       var gameListEl = $("<ul>");
       data._embedded.events.forEach((el, i) => {
         //create
         var gameEl = $("<li>");
+        // gameEl.css("flex-direction", "row");
         var selectBtnEl = $("<button>");
+        selectBtnEl.addClass("uk-button uk-button-secondary uk-width-1-2");
         //array deconstructor assigned values by splitting value from click event with regex
         // var [home, away] = data._embedded.events[i].name.split(
         //   /[\sv\s]|[\sv.\s]|[\svs\s]|[\svs.\s]/
         // );
-var [home, away] = setTeamNames(data._embedded.events[i].name)
+        var [home, away] = setTeamNames(data._embedded.events[i].name)
         home = home?.trim();
         away = away?.trim();
         //home
@@ -47,9 +44,14 @@ var [home, away] = setTeamNames(data._embedded.events[i].name)
         var awayIcon = setIcon(
           data._embedded.events[i]._embedded.attractions[1].images
         );
-
+        var nameContainer = $("<p>");
+        nameContainer.addClass("uk-width-1-2")
+        var gameName = data._embedded.events[i].name;
+        gameEl.append(nameContainer);
         //set
-        gameEl.text(data._embedded.events[i].name);
+        nameContainer.text(gameName);
+        gameEl.append(nameContainer);
+        
         gameEl.attr("jumpto", "details");
         gameEl.attr("jumpfrom", "games");
         //Cannot read properties of undefined (reading 'trim')
@@ -58,10 +60,13 @@ var [home, away] = setTeamNames(data._embedded.events[i].name)
         gameEl.attr("awayTeam", away);
         gameEl.attr("homeIcon", homeIcon);
         gameEl.attr("awayIcon", awayIcon);
+        
+
+
         gameEl.click(() => {
           // console.log(event.currentTarget.attributes[0].value);
           // console.log(event.currentTarget.attributes[1].value);
-          
+
           navigate(
             event.currentTarget.attributes[0].value,
             event.currentTarget.attributes[1].value
@@ -70,7 +75,9 @@ var [home, away] = setTeamNames(data._embedded.events[i].name)
           getTeamStats(home, homeIcon);
           getTeamStats(away, awayIcon);
         });
+
         selectBtnEl.text("See Players");
+       
         //append
         $("#games").append(gameListEl);
         gameListEl.append(gameEl);
@@ -127,7 +134,9 @@ function navigate(jumpFrom, jumpTo) {
 function popTeamListing() {
   Object.keys(nbaTeams).forEach((el) => {
     var teamBtn = $("<button>");
-    teamBtn.addClass("uk-background-muted uk-padding")
+    teamBtn.addClass("uk-padding uk-button uk-button-secondary");
+    teamBtn.addClass("uk-flex-center@l");
+    teamBtn.attr("id", "team-select");
     teamBtn.text(el);
 
     var teamArr = el.split(" ");
@@ -186,13 +195,13 @@ function bdlStatsApi(playerId, playerStatsType) {
       // console.log(stats)
       /*After the fetch for player stats is completed, a second fetch command and this passes
      the data from the first API request on to the second API request for names*/
-     
-     bdlNamesApi(playerId, stats.data[0],playerStatsType) 
-     
+
+      bdlNamesApi(playerId, stats.data[0], playerStatsType)
+
     });
 }
 // This function fetched the player names and combine player stats
-function bdlNamesApi(playerId, playerStats,playerStatsType) {
+function bdlNamesApi(playerId, playerStats, playerStatsType) {
   var requestUrl = `https://www.balldontlie.io/api/v1/players/${playerId}`;
 
   // console.log(requestUrl)
@@ -204,11 +213,11 @@ function bdlNamesApi(playerId, playerStats,playerStatsType) {
       // console.log(stats);
       //This method merges player stats from Fetch(bdlStatApi) with the stats from Fetch(bdlNamesApi)
       $.extend(playerStats, stats);
-// console.log(playerStats)
+      // console.log(playerStats)
       //Passes player stats to the displayPlayerStats function
-      playerStatsType == "short" ? 
-      displayPlayerStats(getPlayerStats(playerStats)):
-      displayPlayerProfile(setPlayerProfile(playerStats));
+      playerStatsType == "short" ?
+        displayPlayerStats(getPlayerStats(playerStats)) :
+        displayPlayerProfile(setPlayerProfile(playerStats));
     });
 }
 
@@ -249,7 +258,7 @@ function getTeamStats(inputTeam, icon) {
   // For each element within the array, call the bdlStatsApi and pass datatype 3 and the element.
   nbaTeams[inputTeam].forEach((el) => {
     // console.log(i)
-    bdlStatsApi(el,"short");
+    bdlStatsApi(el, "short");
   });
 }
 
@@ -280,7 +289,7 @@ function displayPlayerStats(pStatObj) {
   //Creating an element
   // console.log(pStatObj);
   var teamEl = $(`[team="${pStatObj.Team}"]`);
- 
+
   var playerCardEl = $("<article>");
   var pstatsUl = $("<ul>");
   teamEl.attr("id", "team-card")
@@ -288,8 +297,8 @@ function displayPlayerStats(pStatObj) {
   pstatsUl.css("background-color", "#ffffffd9");
   // pstatsUl.css("width", "fit-content")
   // pstatsUl.css("box-shadow", "20px 0px 20px 15px #ffffff80")
-  
- 
+
+
 
   teamEl.append(playerCardEl);
   playerCardEl.append(pstatsUl);
@@ -316,78 +325,78 @@ function displayPlayerStats(pStatObj) {
 }
 
 
-
 /* This function dynamically populates the drop down list of teams by reference the 
   nbaTeams object*/
-  function populateTeamList() {
-    var lookupFormEl = $("<form>");
-    var playerSelectEl = $("<select>");
-    var playerInputEl = $("<input>");
-    var submitBtn = $("<button>");
-  
-    Object.keys(nbaTeams).forEach((el) => {
-      var optionListEl = $("<option>");
-      optionListEl.attr("value", el);
-      optionListEl.text(el);
-      playerSelectEl.append(optionListEl);
-    });
-    submitBtn.text("Submit");
-    submitBtn.click(function (event) {
-      event.preventDefault();
-      getPlayerId(playerInputEl.val(), playerSelectEl.val(), "long");
-      
-    });
-  
-    $("#search").append(lookupFormEl);
-    lookupFormEl.append(playerSelectEl);
-    lookupFormEl.append(playerInputEl);
-    lookupFormEl.append(submitBtn);
-  }
-  
-  function setPlayerProfile(stats) {
-    
-    return {
-      Name : (stats.first_name + " " + stats.last_name),
-      Team : stats.team.full_name,
-      Height : (stats.height_feet + "-" + stats.height_inches),
-      Position : stats.position,
-      Weight: stats.weight_pounds,
-      pts: stats.pts.toFixed(1),
-      reb:  (stats.oreb + stats.dreb).toFixed(1),
-      ast: stats.ast.toFixed(1),
-      fgp: (stats.fg_pct * 100).toFixed(1),
-      fg3p: (stats.fg3_pct * 100).toFixed(1),
-      stl: stats.stl,
-      blk: stats.blk,
-      to: stats.turnover
-        
-    }
+function populateTeamList() {
+  var lookupFormEl = $("<form>");
+  var playerSelectEl = $("<select>");
+  var playerInputEl = $("<input>");
+  var submitBtn = $("<button>");
+
+  Object.keys(nbaTeams).forEach((el) => {
+    var optionListEl = $("<option>");
+    optionListEl.attr("value", el);
+    optionListEl.addClass("")
+    optionListEl.text(el);
+    playerSelectEl.append(optionListEl);
+  });
+  submitBtn.text("Submit");
+  submitBtn.click(function (event) {
+    event.preventDefault();
+    getPlayerId(playerInputEl.val(), playerSelectEl.val(), "long");
+
+  });
+
+  $("#search").append(lookupFormEl);
+  lookupFormEl.append(playerSelectEl);
+  lookupFormEl.append(playerInputEl);
+  lookupFormEl.append(submitBtn);
+}
+
+function setPlayerProfile(stats) {
+
+  return {
+    Name: (stats.first_name + " " + stats.last_name),
+    Team: stats.team.full_name,
+    Height: (stats.height_feet + "-" + stats.height_inches),
+    Position: stats.position,
+    Weight: stats.weight_pounds,
+    pts: stats.pts.toFixed(1),
+    reb: (stats.oreb + stats.dreb).toFixed(1),
+    ast: stats.ast.toFixed(1),
+    fgp: (stats.fg_pct * 100).toFixed(1),
+    fg3p: (stats.fg3_pct * 100).toFixed(1),
+    stl: stats.stl,
+    blk: stats.blk,
+    to: stats.turnover
 
   }
-  function displayPlayerProfile (player){
+
+}
+function displayPlayerProfile(player) {
 
   // create
-    var nameEl = $("<h2>");
+  var nameEl = $("<h2>");
 
-    // set 
-    nameEl.text(player.Name)
-    // append
-    $("#single-player-stats").append(nameEl)
-  }
+  // set 
+  nameEl.text(player.Name)
+  // append
+  $("#single-player-stats").append(nameEl)
+}
 
-  function setLocalStorage(favoritePlayers) {
-    document.setLocalStorage("favoritePlayersStringify", JSON.stringify(favoritePlayers))
-  }
+function setLocalStorage(favoritePlayers) {
+  document.setLocalStorage("favoritePlayersStringify", JSON.stringify(favoritePlayers))
+}
 
-  function getLocalStorage() {
-    JSON.parse(document.getLocalStorage(favoritePlayerStringify))
-  }
+function getLocalStorage() {
+  JSON.parse(document.getLocalStorage(favoritePlayerStringify))
+}
 
- function init(){
-   popTeamListing();
-   populateTeamList();
+function init() {
+  popTeamListing();
+  populateTeamList();
 
- }
+}
 
 init()
 
