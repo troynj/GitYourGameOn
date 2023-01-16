@@ -153,8 +153,9 @@ function setIcon(dataArr) {
 }
 
 function navigate(jumpFrom, jumpTo) {
-  jumpFrom === "nav" && (jumpFrom = document.querySelector("#visible"));
-  $(`#${jumpFrom}`).toggleClass("visible invisible");
+  jumpFrom === "nav"
+    ? $(".visible").toggleClass("visible invisible")
+    : $(`#${jumpFrom}`).toggleClass("visible invisible");
   $(`#${jumpTo}`).toggleClass("visible invisible");
 }
 
@@ -404,7 +405,7 @@ function displayPlayerProfile(player) {
 
   $("#modal-favorites").click(() => {
     addLocalStorage(player);
-    console.log(localStorage.getItem("favoritePlayersStringify"));
+    // console.log(localStorage.getItem("favoritePlayersStringify"));
   });
 
   $("#modal-close").click(() => {
@@ -419,8 +420,30 @@ $("#home-nav").click(() => {
 $("#favorites-nav").click((event) => {
   event.preventDefault();
   populateFavorites();
-  // navigate("nav", "fav")
+  navigate("nav", "fav");
+  displayFavorites();
 });
+
+function displayFavorites() {
+  var favObj = getLocalStorage() ?? {};
+
+  Object.values(favObj).forEach((el) => {
+    var listEl = $("<ul>");
+    Object.entries(el).forEach(([key, value]) => {
+      var itemEl = $("<li>");
+
+      if (key === "Name") {
+        var titelEl = $("<h2>");
+        titelEl.text(value);
+        listEl.prepend(titelEl);
+      } else {
+        itemEl.text(key + ": " + value);
+        listEl.append(itemEl);
+      }
+    });
+    $("#fav").append(listEl);
+  });
+}
 
 function clearSearch() {
   $("#tmhere").empty();
@@ -433,13 +456,13 @@ function populateFavorites() {
   Object.entries(myFavorites).forEach(([key, value]) => {
     player[key] = value;
   });
-  console.log(player);
+  // console.log(player);
 }
 
 function addLocalStorage(addToStorage) {
   var storage = getLocalStorage() ?? [];
   storage.push(addToStorage);
-  window.localStorage.removeItem('favoritePlayersStringify')  
+  window.localStorage.removeItem("favoritePlayersStringify");
   setLocalStorage(storage);
 }
 
