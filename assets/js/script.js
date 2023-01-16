@@ -174,7 +174,7 @@ var nbaTeams = {
 };
 
 //This fetch request retrieves the 3 player stats for the selected NBA team
-function bdlStatsApi(playerId) {
+function bdlStatsApi(playerId, playerStatsType) {
   var requestUrl = `https://www.balldontlie.io/api/v1/season_averages?player_ids[]=${playerId}`;
 
   fetch(requestUrl)
@@ -182,14 +182,17 @@ function bdlStatsApi(playerId) {
       return response.json();
     })
     .then((stats) => {
+      // console.log(playerStatsType)
       // console.log(stats)
       /*After the fetch for player stats is completed, a second fetch command and this passes
      the data from the first API request on to the second API request for names*/
-      bdlNamesApi(playerId, stats.data[0]);
+     
+     bdlNamesApi(playerId, stats.data[0],playerStatsType) 
+     
     });
 }
 // This function fetched the player names and combine player stats
-function bdlNamesApi(playerId, playerStats) {
+function bdlNamesApi(playerId, playerStats,playerStatsType) {
   var requestUrl = `https://www.balldontlie.io/api/v1/players/${playerId}`;
 
   // console.log(requestUrl)
@@ -201,8 +204,28 @@ function bdlNamesApi(playerId, playerStats) {
       // console.log(stats);
       //This method merges player stats from Fetch(bdlStatApi) with the stats from Fetch(bdlNamesApi)
       $.extend(playerStats, stats);
+// console.log(playerStats)
       //Passes player stats to the displayPlayerStats function
-      displayPlayerStats(getPlayerStats(playerStats));
+      playerStatsType == "short" ? 
+      displayPlayerStats(getPlayerStats(playerStats)):
+      displayPlayerProfile(setPlayerProfile(playerStats));
+    });
+}
+
+/* This function fetches players that match the input name and then identifies the player name that also have a team that matches the selected team*/
+function getPlayerId(playerSearched, team, playerStatsType) {
+  var requestUrl = `https://www.balldontlie.io/api/v1/players?search=${playerSearched}`;
+
+  fetch(requestUrl)
+    .then((response) => {
+      return response.json();
+    })
+    .then((stats) => {
+      stats.data.forEach((el) => {
+        if (team === el.team.full_name) {
+          bdlStatsApi(el.id, playerStatsType);
+        }
+      });
     });
 }
 
@@ -226,7 +249,7 @@ function getTeamStats(inputTeam, icon) {
   // For each element within the array, call the bdlStatsApi and pass datatype 3 and the element.
   nbaTeams[inputTeam].forEach((el) => {
     // console.log(i)
-    bdlStatsApi(el);
+    bdlStatsApi(el,"short");
   });
 }
 
@@ -292,4 +315,71 @@ function displayPlayerStats(pStatObj) {
   });
 }
 
-popTeamListing();
+
+
+/* This function dynamically populates the drop down list of teams by reference the 
+  nbaTeams object*/
+  function populateTeamList() {
+    var lookupFormEl = $("<form>");
+    var playerSelectEl = $("<select>");
+    var playerInputEl = $("<input>");
+    var submitBtn = $("<button>");
+  
+    Object.keys(nbaTeams).forEach((el) => {
+      var optionListEl = $("<option>");
+      optionListEl.attr("value", el);
+      optionListEl.text(el);
+      playerSelectEl.append(optionListEl);
+    });
+    submitBtn.text("Submit");
+    submitBtn.click(function (event) {
+      event.preventDefault();
+      getPlayerId(playerInputEl.val(), playerSelectEl.val(), "long");
+      
+    });
+  
+    $("#modal").append(lookupFormEl);
+    lookupFormEl.append(playerSelectEl);
+    lookupFormEl.append(playerInputEl);
+    lookupFormEl.append(submitBtn);
+  }
+  
+  function setPlayerProfile(stats) {
+    
+    return {
+      Name : (stats.first_name + " " + stats.last_name),
+      Team : stats.team.full_name,
+      Height : (stats.height_feet + "-" + stats.height_inches),
+      Position : stats.position,
+      Weight: stats.weight_pounds,
+      pts: stats.pts.toFixed(1),
+      reb:  (stats.oreb + stats.dreb).toFixed(1),
+      ast: stats.ast.toFixed(1),
+      fgp: (stats.fg_pct * 100).toFixed(1),
+      fg3p: (stats.fg3_pct * 100).toFixed(1),
+      stl: stats.stl,
+      blk: stats.blk,
+      to: stats.turnover
+        
+    }
+
+  }
+  function displayPlayerProfile (player){
+
+  // create
+    var nameEl = $("<h2>");
+
+    // set 
+    nameEl.text(player.Name)
+    // append
+    $("#single-player-stats").append(nameEl)
+  }
+
+ function init(){
+   popTeamListing();
+   populateTeamList();
+
+ }
+
+init()
+
