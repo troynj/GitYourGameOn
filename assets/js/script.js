@@ -43,9 +43,9 @@ function tmBasketball(userSelection) {
       data._embedded.events.forEach((el, i) => {
         //create
         var gameEl = $("<div>");
-        gameEl.addClass("uk-flex-center")
+        gameEl.addClass("uk-flex-center");
         gameEl.css("background-color", "#ffffffd9");
-        gameEl.css("margin","15px 10px");
+        gameEl.css("margin", "15px 10px");
         var selectBtnEl = $("<button>");
         selectBtnEl.addClass("uk-button uk-button-secondary");
         //array deconstructor assigned values by splitting value from click event with regex
@@ -53,7 +53,7 @@ function tmBasketball(userSelection) {
         //   /[\sv\s]|[\sv.\s]|[\svs\s]|[\svs.\s]/
         // );
 
-        var [home, away] = setTeamNames(data._embedded.events[i].name)
+        var [home, away] = setTeamNames(data._embedded.events[i].name);
 
         home = home?.trim();
         away = away?.trim();
@@ -72,7 +72,7 @@ function tmBasketball(userSelection) {
         gameEl.append(nameContainer);
         //set
         nameContainer.text(gameName);
-        nameContainer.css("font-size","40px");
+        nameContainer.css("font-size", "40px");
         gameEl.append(nameContainer);
 
         gameEl.attr("jumpto", "details");
@@ -104,15 +104,12 @@ function tmBasketball(userSelection) {
         gameListEl.append(gameEl);
         gameEl.append(selectBtnEl);
 
-
         // adds game date to games page
         var gameDate = data._embedded.events[i].dates.start.localDate;
         console.log(gameDate);
 
         gameEl.append(gameDate);
       });
-
-
     });
 }
 
@@ -156,11 +153,10 @@ function setIcon(dataArr) {
 }
 
 function navigate(jumpFrom, jumpTo) {
-  jumpFrom === "nav" && (jumpFrom = document.querySelector("#visible"))
+  jumpFrom === "nav" && (jumpFrom = document.querySelector("#visible"));
   $(`#${jumpFrom}`).toggleClass("visible invisible");
   $(`#${jumpTo}`).toggleClass("visible invisible");
 }
-
 
 var nbaTeams = {
   "Los Angeles Lakers": ["237", "472", "117"],
@@ -201,15 +197,14 @@ function popTeamListing() {
 
     teamBtn.addClass("uk-flex-center@l");
     teamBtn.attr("id", "team-select");
-    teamBtn.addClass("uk-background-muted uk-padding")
+    teamBtn.addClass("uk-background-muted uk-padding");
     teamBtn.text(el);
     teamBtn.hover(() => {
-          teamBtn.addClass("uk-button-secondary");
-
-    })
+      teamBtn.addClass("uk-button-secondary");
+    });
     teamBtn.mouseleave(() => {
       teamBtn.removeClass("uk-button-secondary");
-    })
+    });
 
     var teamArr = el.split(" ");
     teamBtn.click(() => {
@@ -251,10 +246,9 @@ function bdlNamesApi(playerId, playerStats, playerStatsType) {
       $.extend(playerStats, stats);
       // console.log(playerStats)
       //Passes player stats to the displayPlayerStats function
-      playerStatsType == "short" ?
-        displayPlayerStats(getPlayerStats(playerStats)) :
-        displayPlayerProfile(setPlayerProfile(playerStats));
-
+      playerStatsType == "short"
+        ? displayPlayerStats(getPlayerStats(playerStats))
+        : displayPlayerProfile(setPlayerProfile(playerStats));
     });
 }
 
@@ -288,8 +282,8 @@ function getTeamStats(inputTeam, icon) {
   titleCardEl.css("color", "white");
   titleCardEl.css("-webkit-text-stroke-width", "1px");
   titleCardEl.css("-webkit-text-stroke-color", "black");
-  titleCardEl.css("background-color", "transparent")
-  titleEl.text(inputTeam)
+  titleCardEl.css("background-color", "transparent");
+  titleEl.text(inputTeam);
 
   $("#details").append(teamEl);
   teamEl.append(titleCardEl);
@@ -304,15 +298,14 @@ function getTeamStats(inputTeam, icon) {
 }
 
 function getPlayerStats(stats) {
-
   return {
-  Player :
-    stats.first_name + " " + stats.last_name + " (" + stats.position + ")",
-  Team : stats.team.full_name,
-  PTS : stats.pts.toFixed(1),
-  REB : (stats.oreb + stats.dreb).toFixed(1),
-  AST : stats.ast.toFixed(1),
-  "FG%" : (stats.fg_pct * 100).toFixed(1),
+    Player:
+      stats.first_name + " " + stats.last_name + " (" + stats.position + ")",
+    Team: stats.team.full_name,
+    PTS: stats.pts.toFixed(1),
+    REB: (stats.oreb + stats.dreb).toFixed(1),
+    AST: stats.ast.toFixed(1),
+    "FG%": (stats.fg_pct * 100).toFixed(1),
   };
 }
 
@@ -346,8 +339,8 @@ function displayPlayerStats(pStatObj) {
       titleEl.text(value);
       listEl.append(titleEl);
       playerCardEl.attr("player-card", value);
-    } else if (key === "Team"){}
-    else {
+    } else if (key === "Team") {
+    } else {
       listEl.text(key + ": " + value);
     }
     //Append the ul element with the stat or name
@@ -355,7 +348,6 @@ function displayPlayerStats(pStatObj) {
     pstatsUl.css("list-style", "none");
   });
 }
-
 
 /* This function dynamically populates the drop down list of teams by reference the 
   nbaTeams object*/
@@ -385,7 +377,6 @@ function populateTeamList() {
 }
 
 function setPlayerProfile(stats) {
-
   return {
     Name: stats.first_name + " " + stats.last_name,
     Team: stats.team.full_name,
@@ -403,44 +394,52 @@ function setPlayerProfile(stats) {
   };
 }
 function displayPlayerProfile(player) {
-  clearSearch()
+  console.log(player);
+  clearSearch();
   Object.entries(player).forEach(([key, value]) => {
     var listItem = $("<li>");
     listItem.text(key + ": " + value);
     $("#tmhere").append(listItem);
   });
 
-  $("#modal-favorite").click(() => {
+  $("#modal-favorites").click(() => {
     addLocalStorage(player);
-    
+    console.log(localStorage.getItem("favoritePlayersStringify"));
   });
-  
+
   $("#modal-close").click(() => {
-  clearSearch()
-})
+    clearSearch();
+  });
 }
 
-$("#home-btn").click(() => {navigate("nav", "teams")})
-$("#modal-favorite").click(() => {
-  console.log("hi")
-  populateFavorites()
-  navigate("nav", "fav")
-})
+$("#home-nav").click(() => {
+  navigate("nav", "teams");
+});
+
+$("#favorites-nav").click((event) => {
+  event.preventDefault();
+  populateFavorites();
+  // navigate("nav", "fav")
+});
 
 function clearSearch() {
-  $("#tmhere").empty()
+  $("#tmhere").empty();
 }
 
 function populateFavorites() {
-  var myFavorites = getLocalStorage()
-  Object.entries(myFavorites).forEach((el) => {
-    console.log(el)
-  })
+  var myFavorites = getLocalStorage() ?? {};
+  var player = {};
+
+  Object.entries(myFavorites).forEach(([key, value]) => {
+    player[key] = value;
+  });
+  console.log(player);
 }
 
 function addLocalStorage(addToStorage) {
-  var storage = getLocalStorage() ?? {};
-  $.extend(storage, addToStorage);
+  var storage = getLocalStorage() ?? [];
+  storage.push(addToStorage);
+  window.localStorage.removeItem('favoritePlayersStringify')  
   setLocalStorage(storage);
 }
 
