@@ -42,13 +42,15 @@ function tmBasketball(userSelection) {
     })
     .then((data) => {
       console.log(data);
-      var gameListEl = $("<ul>");
+      var gameListEl = $("<div>");
       data._embedded.events.forEach((el, i) => {
         //create
-        var gameEl = $("<li>");
-        // gameEl.css("flex-direction", "row");
+        var gameEl = $("<div>");
+        gameEl.addClass("uk-flex-center")
+        gameEl.css("background-color", "#ffffffd9");
+        gameEl.css("margin","15px 10px");
         var selectBtnEl = $("<button>");
-        selectBtnEl.addClass("uk-button uk-button-secondary uk-width-1-2");
+        selectBtnEl.addClass("uk-button uk-button-secondary");
         //array deconstructor assigned values by splitting value from click event with regex
         // var [home, away] = data._embedded.events[i].name.split(
         //   /[\sv\s]|[\sv.\s]|[\svs\s]|[\svs.\s]/
@@ -65,11 +67,13 @@ function tmBasketball(userSelection) {
           data._embedded.events[i]._embedded.attractions[1].images
         );
         var nameContainer = $("<p>");
-        nameContainer.addClass("uk-width-1-2")
+        // nameContainer.css("display", "inline");
+        nameContainer.addClass("uk-flex-inline");
         var gameName = data._embedded.events[i].name;
         gameEl.append(nameContainer);
         //set
         nameContainer.text(gameName);
+        nameContainer.css("font-size","40px");
         gameEl.append(nameContainer);
 
         gameEl.attr("jumpto", "details");
@@ -80,8 +84,6 @@ function tmBasketball(userSelection) {
         gameEl.attr("awayTeam", away);
         gameEl.attr("homeIcon", homeIcon);
         gameEl.attr("awayIcon", awayIcon);
-
-
 
         gameEl.click(() => {
           // console.log(event.currentTarget.attributes[0].value);
@@ -95,7 +97,7 @@ function tmBasketball(userSelection) {
           getTeamStats(home, homeIcon);
           getTeamStats(away, awayIcon);
         });
-
+        selectBtnEl.css("float", "right");
         selectBtnEl.text("See Players");
 
         //append
@@ -268,7 +270,10 @@ function getTeamStats(inputTeam, icon) {
   teamEl.attr("team", inputTeam);
   teamEl.css("background-image", `url("${icon}")`);
   teamEl.css("text-align", "center");
-  titleCardEl.css("background-color", "white")
+  titleCardEl.css("color", "white");
+  titleCardEl.css("-webkit-text-stroke-width", "1px");
+  titleCardEl.css("-webkit-text-stroke-color", "black");
+  titleCardEl.css("background-color", "transparent")
   titleEl.text(inputTeam)
   $("#details").append(teamEl);
   teamEl.append(titleCardEl)
