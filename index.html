@@ -1,43 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/css/uikit.min.css" />
-    <link rel="stylesheet" href="./assets/css/style.css" />
-    <title>Document</title>
-  </head>
-  <body>
-    <head>
-      <nav>
-        <ul>
-          <li>Home</li>
-          <a href="#modal" uk-toggle>Search</a>
-          <li>Favorites</li>
-        </ul>
-      </nav>
-    </head>
-<!-- <button id="myBtn"></button> -->
-    <section id="teams" class="visible uk-child-width-1-5 uk-text-center uk-flex-center "></section>
-    <section id="games" class="invisible">
-    </section>
-    <section id="details" class="invisible"></section>
 
-    <div id="modal" uk-modal>
-      <div class="uk-modal-dialog uk-modal-body">
-          <h2 class="uk-modal-title">Search</h2>
-          <p class="uk-text-right">
-              <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-              <button class="uk-button uk-button-primary" type="button">Save</button>
-          </p>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/css/uikit.min.css" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <title>Document</title>
+</head>
+
+<body>
+
+  <head>
+    <nav>
+      <ul>
+        <li>Home</li>
+        <li><a href="#modal" uk-toggle>Search</a></li>
+        <li>Favorites</li>
+      </ul>
+    </nav>
+  </head>
+  <!-- <button id="myBtn"></button> -->
+  <section id="teams" class="visible uk-child-width-1-5 uk-text-center uk-flex-center "></section>
+  <section id="games" class="invisible">
+  </section>
+  <section id="details" class="invisible"></section>
+
+  <div id="modal" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+      <h2 class="uk-modal-title">Player Search</h2>
+      <p class="uk-text-right" id="search"></p>
+      <div class="uk-modal-footer uk-align-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
+        <button class="uk-button uk-button-default" type="button">Favorite</button>
       </div>
+    </div>
   </div>
-  
-    <!--jQuery-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/js/uikit-icons.min.js"></script>
-    <script src="./assets/js/script.js"></script>
-  </body>
+
+  <!--jQuery-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/js/uikit-icons.min.js"></script>
+  <script src="./assets/js/script.js"></script>
+</body>
+
 </html>

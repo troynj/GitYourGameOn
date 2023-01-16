@@ -2,6 +2,10 @@ section{
     outline: 2px solid black;
 }
 
+nav ul {
+    display: inline;
+}
+
 .visible{
     display: block;
 }
