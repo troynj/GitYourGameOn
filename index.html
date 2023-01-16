@@ -19,7 +19,8 @@
       <ul class="uk-flex uk-flex-center">
         <li><a href="">Home</a></li>
         <li><a href="#modal" uk-toggle>Search</a></li>
-        <li><a href="">Favorites</a></li>
+        <li jumpto="favorites" jumpfrom="nav"><a href="">Favorites</a></li>
+
       </ul>
     </nav>
   </header>
@@ -34,9 +35,10 @@
     <div class="uk-modal-dialog uk-modal-body">
       <h2 class="uk-modal-title">Player Search</h2>
       <p class="uk-text-right" id="search"></p>
-      <div class="uk-modal-footer uk-align-right">
-        <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
-        <button class="uk-button uk-button-default" type="button">Favorite</button>
+      <div  class="uk-modal-footer uk-align-right">
+        <ul id="tmhere"></ul>
+        <button id="modal-close" class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
+        <button id="modal-favorite" class="uk-button uk-button-default" type="button">Favorite</button>
       </div>
     </div>
   </div>
