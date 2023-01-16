@@ -9,3 +9,30 @@ section{
 .invisible {
     display: none;
 }
+
+#details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+#team-card{
+    border-radius: 25px;
+    margin: 10px;
+}
+
+ul, li, article{
+    margin: 0px;
+    padding: 0px
+}
+
+ul {
+    padding: 10px;
+    border-radius: 25px;
+}
+li {
+    padding: 0 20px;
+}
+
+article {
+    padding: 20px;
+}

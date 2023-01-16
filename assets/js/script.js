@@ -3,6 +3,9 @@
 //_embedded.events[0]._embedded.attraces[0].url -- away icon
 //_embedded.events[0]._embedded.attractions[1].images[1].url -- diff size away icon (goes til [9])
 
+//social media links
+// _embedded.events[0]._embedded.attractions[0].externalLinks
+
 function tmBasketball(userSelection) {
   // console.log(userSelection);
   var apiKey = `apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
@@ -18,33 +21,49 @@ function tmBasketball(userSelection) {
       return response.json();
     })
     .then((data) => {
-      // console.log(data);
+      console.log(data);
       var gameListEl = $("<ul>");
       data._embedded.events.forEach((el, i) => {
         //create
         var gameEl = $("<li>");
         var selectBtnEl = $("<button>");
         //array deconstructor assigned values by splitting value from click event with regex
-        var [home, away] = data._embedded.events[i].name.split(
-          /[\sv\s]+[\sv.\s]+[\svs\s]+[\svs.\s]/
+        // var [home, away] = data._embedded.events[i].name.split(
+        //   /[\sv\s]|[\sv.\s]|[\svs\s]|[\svs.\s]/
+        // );
+var [home, away] = setTeamNames(data._embedded.events[i].name)
+        home = home?.trim();
+        away = away?.trim();
+        //home
+        var homeIcon = setIcon(
+          data._embedded.events[i]._embedded.attractions[0].images
+        );
+        //away
+        var awayIcon = setIcon(
+          data._embedded.events[i]._embedded.attractions[1].images
         );
 
         //set
         gameEl.text(data._embedded.events[i].name);
         gameEl.attr("jumpto", "details");
         gameEl.attr("jumpfrom", "games");
-        gameEl.attr("home", home.trim());
-        gameEl.attr("away", away.trim());
+        //Cannot read properties of undefined (reading 'trim')
+        gameEl.attr("homeTeam", home);
+        //Cannot read properties of undefined (reading 'trim')
+        gameEl.attr("awayTeam", away);
+        gameEl.attr("homeIcon", homeIcon);
+        gameEl.attr("awayIcon", awayIcon);
         gameEl.click(() => {
           // console.log(event.currentTarget.attributes[0].value);
           // console.log(event.currentTarget.attributes[1].value);
+          
           navigate(
             event.currentTarget.attributes[0].value,
             event.currentTarget.attributes[1].value
           );
           $("#games").empty();
-          getTeamStats(home.trim());
-          getTeamStats(away.trim());
+          getTeamStats(home, homeIcon);
+          getTeamStats(away, awayIcon);
         });
         selectBtnEl.text("Select");
         //append
@@ -53,6 +72,45 @@ function tmBasketball(userSelection) {
         gameEl.append(selectBtnEl);
       });
     });
+}
+
+function setTeamNames(gameStr) {
+  // console.log(gameStr);
+  var gameArr = gameStr.split(" ");
+  var t1 = "";
+  var t2 = "";
+  var teamArr = [t1, t2];
+  var j = 0;
+  for (var i = 0; i < gameArr.length; i++) {
+    if (
+      gameArr[i] == "vs." ||
+      gameArr[i] == "v." ||
+      gameArr[i] == "vs" ||
+      gameArr[i] == "v"
+    ) {
+      j++;
+    } else {
+      // console.log(teamArr[j]);
+      teamArr[j] += gameArr[i] + " ";
+    }
+  }
+  return teamArr;
+}
+
+function setIcon(dataArr) {
+  var min = 1000;
+  var savedIndex = 0;
+  dataArr.forEach((el, i) => {
+    min > el.height && (min = el.height) && (savedIndex = i);
+    //   console.log("==" + i + "====");
+    //   console.log(min);
+    //   console.log(el.height);
+    //   console.log("===============");
+  });
+
+  // console.log(min);
+  // console.log(savedIndex);
+  return dataArr[savedIndex].url;
 }
 
 //Create elements on page
@@ -123,7 +181,7 @@ var nbaTeams = {
   "Milwaukee Bucks": ["15", "315", "214"],
   "New York Knicks": ["73", "387", "399"],
   "Cleveland Cavaliers": ["666581", "285", "322"],
-  "Chicago Bulls": ["268", "125", "27"],
+  "Chicago Bulls": ["268", "125", "460"],
   "Philadelphia 76ers": ["192", "145", "3547254"],
   "Miami Heat": ["79", "666633", "4"],
   "Toronto Raptors": ["416", "17896055", "458"],
@@ -144,6 +202,7 @@ function bdlStatsApi(playerId) {
       return response.json();
     })
     .then((stats) => {
+      // console.log(stats)
       /*After the fetch for player stats is completed, a second fetch command and this passes
      the data from the first API request on to the second API request for names*/
       bdlNamesApi(playerId, stats.data[0]);
@@ -159,6 +218,7 @@ function bdlNamesApi(playerId, playerStats) {
       return response.json();
     })
     .then((stats) => {
+      // console.log(stats);
       //This method merges player stats from Fetch(bdlStatApi) with the stats from Fetch(bdlNamesApi)
       $.extend(playerStats, stats);
       //Passes player stats to the displayPlayerStats function
@@ -167,10 +227,25 @@ function bdlNamesApi(playerId, playerStats) {
 }
 
 //Get Stats
-function getTeamStats(inputTeam) {
+function getTeamStats(inputTeam, icon) {
+  // console.log(inputTeam);
+  // console.log(inputTeam)
+  var teamEl = $("<section>");
+  var titleCardEl = $("<div>")
+  var titleEl = $("<h2>")
+  teamEl.attr("team", inputTeam);
+  teamEl.css("background-image", `url("${icon}")`);
+  teamEl.css("text-align", "center");
+  titleCardEl.css("background-color", "white")
+  titleEl.text(inputTeam)
+  $("#details").append(teamEl);
+  teamEl.append(titleCardEl)
+  titleCardEl.append(titleEl)
+  // console.log(teamEl);
   // console.log(inputTeam);
   // For each element within the array, call the bdlStatsApi and pass datatype 3 and the element.
   nbaTeams[inputTeam].forEach((el) => {
+    // console.log(i)
     bdlStatsApi(el);
   });
 }
@@ -197,24 +272,37 @@ function getPlayerStats(stats) {
 }
 
 function displayPlayerStats(pStatObj) {
+  // console.log(pStatObj.Team)
+
   //Creating an element
   // console.log(pStatObj);
-  var teamEl = $("<article>");
+  var teamEl = $(`[team="${pStatObj.Team}"]`);
+ 
+  var playerCardEl = $("<article>");
   var pstatsUl = $("<ul>");
-  $("#details").append(teamEl);
-  teamEl.append(pstatsUl);
+  teamEl.attr("id", "team-card")
+
+  pstatsUl.css("background-color", "#ffffffd9");
+  // pstatsUl.css("width", "fit-content")
+  // pstatsUl.css("box-shadow", "20px 0px 20px 15px #ffffff80")
+  
+ 
+
+  teamEl.append(playerCardEl);
+  playerCardEl.append(pstatsUl);
   // Append that element to the Div tag with ID = "player-stats-card"
   //$("#player-stats-card").append(pstatsUl);
   Object.entries(pStatObj).forEach(([key, value]) => {
     //create element
     var listEl = $("<li>");
     //Set the element with the stat or the name
-    
+
     if (key === "Player") {
       var titleEl = $("<h3>");
       titleEl.css("margin-bottom", "0px");
       titleEl.text(value);
       listEl.append(titleEl);
+      playerCardEl.attr("player-card", value);
     } else {
       listEl.text(key + ": " + value);
     }
