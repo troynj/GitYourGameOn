@@ -113,22 +113,6 @@ function setIcon(dataArr) {
   return dataArr[savedIndex].url;
 }
 
-//Create elements on page
-var landingSect = document.createElement("div");
-var searchSect = document.createElement("div");
-var resultSect = document.createElement("div");
-//Set attributes to the containers
-// landingSect.setAttribute("")
-// searchSect.setAttribute("")
-// resultSect.setAttribute("")
-// append containers
-document.body.appendChild(landingSect);
-document.body.appendChild(searchSect);
-document.body.appendChild(resultSect);
-
-// function popTeamSelect() { //function iterate through 'nbaTeams'  + create checkboxes (discuss dropdown option)
-
-// }
 
 function navigate(jumpFrom, jumpTo) {
   $(`#${jumpFrom}`).toggleClass("visible invisible");
@@ -138,6 +122,7 @@ function navigate(jumpFrom, jumpTo) {
 function popTeamListing() {
   Object.keys(nbaTeams).forEach((el) => {
     var teamBtn = $("<button>");
+    teamBtn.addClass("uk-background-muted uk-padding")
     teamBtn.text(el);
 
     var teamArr = el.split(" ");
@@ -149,16 +134,6 @@ function popTeamListing() {
   });
 }
 
-// function popGameListing() {
-//  //function to show TM results w/ dates and headline
-//  var gameList = createElement("div");
-//  for (var i = 0; i < 5; i++) {
-//    // Look at ticketmaster data and append the titles
-
-//    var selectBtn = document.createElement("button");
-//    selectBtn.setAttribute("");
-//  }
-// }
 
 var nbaTeams = {
   "Los Angeles Lakers": ["237", "472", "117"],
