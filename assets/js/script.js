@@ -338,7 +338,7 @@ function displayPlayerStats(pStatObj) {
       
     });
   
-    $("#modal").append(lookupFormEl);
+    $("#search").append(lookupFormEl);
     lookupFormEl.append(playerSelectEl);
     lookupFormEl.append(playerInputEl);
     lookupFormEl.append(submitBtn);
