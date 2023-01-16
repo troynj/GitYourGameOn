@@ -6,6 +6,26 @@
 //social media links
 // _embedded.events[0]._embedded.attractions[0].externalLinks
 
+var header = $('body');
+
+var backgrounds = new Array(
+  'url(https://images.unsplash.com/photo-1499754162586-08f451261482?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)',
+  'url(https://images.unsplash.com/photo-1533923156502-be31530547c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)',
+  'url(http://placekitten.com/300)',
+  'url(http://placekitten.com/400)'
+);
+
+var current = 0;
+
+function nextBackground() {
+  current++;
+  current = current % backgrounds.length;
+  header.css('background-image', backgrounds[current]);
+}
+setInterval(nextBackground, 3000);
+
+header.css('background-image', backgrounds[0]);
+
 function tmBasketball(userSelection) {
   // console.log(userSelection);
   var apiKey = `apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
@@ -51,7 +71,7 @@ function tmBasketball(userSelection) {
         //set
         nameContainer.text(gameName);
         gameEl.append(nameContainer);
-        
+
         gameEl.attr("jumpto", "details");
         gameEl.attr("jumpfrom", "games");
         //Cannot read properties of undefined (reading 'trim')
@@ -60,7 +80,7 @@ function tmBasketball(userSelection) {
         gameEl.attr("awayTeam", away);
         gameEl.attr("homeIcon", homeIcon);
         gameEl.attr("awayIcon", awayIcon);
-        
+
 
 
         gameEl.click(() => {
@@ -77,7 +97,7 @@ function tmBasketball(userSelection) {
         });
 
         selectBtnEl.text("See Players");
-       
+
         //append
         $("#games").append(gameListEl);
         gameListEl.append(gameEl);
@@ -177,7 +197,7 @@ var nbaTeams = {
   "Washington Wizards": ["378", "37", "265"],
   "Atlanta Hawks": ["490", "101", "334"],
   "Indiana Pacers": ["3547245", "452", "210"],
-  "Charlette Hornets": ["3547239", "204", "403"],
+  "Charlotte Hornets": ["3547239", "204", "403"],
   "Detroit Pistons": ["17896075", "54", "482"],
   "Orlando Magic": ["28", "38017683", "165"],
 };

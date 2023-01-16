@@ -9,6 +9,10 @@ header {
     background-color: rgb(20, 20, 20);
 }
 
+body {
+    box-shadow: inset 0 0 65px rgb(20, 20, 20);
+}
+
 
 nav ul {
     display: inline;
@@ -60,12 +64,17 @@ article {
 }
 
 #team-select {
-    height: 75px;
+    height: 60px;
     margin: 5px;
     border-radius: 5px;
-    opacity: 50%;
+    opacity: 95%;
 
     /* background-color: ; */
+}
+
+body {
+    -webkit-transition: background-image 0.5s ease-in-out;
+transition: background-image 0.5s ease-in-out;
 }
 
 
