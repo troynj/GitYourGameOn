@@ -6,25 +6,22 @@
 //social media links
 // _embedded.events[0]._embedded.attractions[0].externalLinks
 
-var header = $('body');
+// var bodyBackground = $('body');
+// var backgrounds = new Array(
+//   'url(https://images.unsplash.com/photo-1499754162586-08f451261482?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)',
+//   'url(https://images.unsplash.com/photo-1533923156502-be31530547c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)',
+//   'url(http://placekitten.com/300)',
+//   'url(http://placekitten.com/400)'
+// );
 
-var backgrounds = new Array(
-  'url(https://images.unsplash.com/photo-1499754162586-08f451261482?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)',
-  'url(https://images.unsplash.com/photo-1533923156502-be31530547c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)',
-  'url(http://placekitten.com/300)',
-  'url(http://placekitten.com/400)'
-);
-
-var current = 0;
-
-function nextBackground() {
-  current++;
-  current = current % backgrounds.length;
-  header.css('background-image', backgrounds[current]);
-}
-setInterval(nextBackground, 3000);
-
-header.css('background-image', backgrounds[0]);
+// var current = 0;
+// function nextBackground() {
+//   current++;
+//   current = current % backgrounds.length;
+//   header.css('background-image', backgrounds[current]);
+// }
+// setInterval(nextBackground, 3000);
+// bodyBackground.css('background-image', backgrounds[0]);
 
 function tmBasketball(userSelection) {
   // console.log(userSelection);
