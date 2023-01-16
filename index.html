@@ -13,7 +13,7 @@
       <nav>
         <ul>
           <li>Home</li>
-          <li id="modal"></li>
+          <a href="#modal" uk-toggle>Search</a>
           <li>Favorites</li>
         </ul>
       </nav>
@@ -24,10 +24,16 @@
     </section>
     <section id="details" class="invisible"></section>
 
-
-    <section id="playerExtStats" class="uk-modal-dialog uk-modal-body">
-      <h2 id="playerName" class="uk-modal-title"></h2>
-    </section>
+    <div id="modal" uk-modal>
+      <div class="uk-modal-dialog uk-modal-body">
+          <h2 class="uk-modal-title">Search</h2>
+          <p class="uk-text-right">
+              <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+              <button class="uk-button uk-button-primary" type="button">Save</button>
+          </p>
+      </div>
+  </div>
+  
     <!--jQuery-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/js/uikit.min.js"></script>
