@@ -202,7 +202,7 @@ function bdlStatsApi(playerId) {
       return response.json();
     })
     .then((stats) => {
-      // console.log(stats)
+      console.log(stats)
       /*After the fetch for player stats is completed, a second fetch command and this passes
      the data from the first API request on to the second API request for names*/
       bdlNamesApi(playerId, stats.data[0]);
@@ -223,6 +223,23 @@ function bdlNamesApi(playerId, playerStats) {
       $.extend(playerStats, stats);
       //Passes player stats to the displayPlayerStats function
       displayPlayerStats(getPlayerStats(playerStats));
+    });
+}
+
+/* This function fetches players that match the input name and then identifies the player name that also have a team that matches the selected team*/
+function getPlayerId(playerSearched, team) {
+  var requestUrl = `https://www.balldontlie.io/api/v1/players?search=${playerSearched}`;
+
+  fetch(requestUrl)
+    .then((response) => {
+      return response.json();
+    })
+    .then((stats) => {
+      stats.data.forEach((el) => {
+        if (team === el.team.full_name) {
+          bdlStatsApi(el.id);
+        }
+      });
     });
 }
 
@@ -312,4 +329,36 @@ function displayPlayerStats(pStatObj) {
   });
 }
 
-popTeamListing();
+
+
+/* This function dynamically populates the drop down list of teams by reference the 
+  nbaTeams object*/
+  function populateTeamList() {
+    var lookupFormEl = $("<form>");
+    var playerSelectEl = $("<select>");
+    var playerInputEl = $("<input>");
+    var submitBtn = $("<button>");
+  
+    Object.keys(nbaTeams).forEach((el) => {
+      var optionListEl = $("<option>");
+      optionListEl.attr("value", el);
+      optionListEl.text(el);
+      playerSelectEl.append(optionListEl);
+    });
+    submitBtn.text("Submit");
+    submitBtn.click(function (event) {
+      event.preventDefault();
+      getPlayerId(playerInputEl.val(), playerSelectEl.val());
+      
+    });
+  
+    $("#modal").append(lookupFormEl);
+    lookupFormEl.append(playerSelectEl);
+    lookupFormEl.append(playerInputEl);
+    lookupFormEl.append(submitBtn);
+  }
+  
+ 
+  popTeamListing();
+  populateTeamList();
+
