@@ -65,6 +65,9 @@ function tmBasketball(userSelection) {
         var awayIcon = setIcon(
           data._embedded.events[i]._embedded.attractions[1].images
         );
+        //Gets the Link to the game selected
+        var gameLink = data._embedded.events[i].url;
+
         var nameContainer = $("<p>");
         // nameContainer.css("display", "inline");
         nameContainer.addClass("uk-flex-inline");
@@ -95,6 +98,11 @@ function tmBasketball(userSelection) {
           $("#games").empty();
           getTeamStats(home, homeIcon);
           getTeamStats(away, awayIcon);
+          displayGameLink(gameName, gameLink)
+          // console.log(gameLink);
+          // console.log(gameName);
+
+          
         });
         selectBtnEl.css("float", "right");
         selectBtnEl.text("Select");
@@ -316,9 +324,18 @@ function getPlayerStats(stats) {
   };
 }
 
+//This function displays a link to TicketMaster for the selected game 
+function displayGameLink (gameName, gameLink){
+  console.log(gameName);
+  console.log(gameLink);
+  var gameLinkEl = $("<a>");
+  gameLinkEl.attr({'id': "game-link", 'href': gameLink});
+  gameLinkEl.text("Buy Tickets to this Game: " + gameName);
+  $("#details").append(gameLinkEl)
+  }
+
 function displayPlayerStats(pStatObj) {
   // console.log(pStatObj.Team)
-
   //Creating an element
   // console.log(pStatObj);
   var teamEl = $(`[team="${pStatObj.Team}"]`);
@@ -355,6 +372,7 @@ function displayPlayerStats(pStatObj) {
     pstatsUl.css("list-style", "none");
   });
 }
+
 
 
 /* This function dynamically populates the drop down list of teams by reference the 
