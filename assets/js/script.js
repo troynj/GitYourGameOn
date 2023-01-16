@@ -43,6 +43,7 @@ function tmBasketball(userSelection) {
     .then((data) => {
       console.log(data);
       var gameListEl = $("<div>");
+
       data._embedded.events.forEach((el, i) => {
         //create
         var gameEl = $("<div>");
@@ -104,7 +105,16 @@ function tmBasketball(userSelection) {
         $("#games").append(gameListEl);
         gameListEl.append(gameEl);
         gameEl.append(selectBtnEl);
+
+
+        // adds game date to games page
+        var gameDate = data._embedded.events[i].dates.start.localDate;
+        console.log(gameDate);
+
+        gameEl.append(gameDate);
       });
+
+
     });
 }
 
