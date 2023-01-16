@@ -22,6 +22,11 @@ function tmBasketball(userSelection) {
     })
     .then((data) => {
       console.log(data);
+
+
+
+
+
       var gameListEl = $("<ul>");
       data._embedded.events.forEach((el, i) => {
         //create
@@ -65,7 +70,7 @@ var [home, away] = setTeamNames(data._embedded.events[i].name)
           getTeamStats(home, homeIcon);
           getTeamStats(away, awayIcon);
         });
-        selectBtnEl.text("Select");
+        selectBtnEl.text("See Players");
         //append
         $("#games").append(gameListEl);
         gameListEl.append(gameEl);
