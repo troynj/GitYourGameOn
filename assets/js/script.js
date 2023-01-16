@@ -375,6 +375,14 @@ function displayPlayerStats(pStatObj) {
     $("#single-player-stats").append(nameEl)
   }
 
+  function setLocalStorage(favoritePlayers) {
+    document.setLocalStorage("favoritePlayersStringify", JSON.stringify(favoritePlayers))
+  }
+
+  function getLocalStorage() {
+    JSON.parse(document.getLocalStorage(favoritePlayerStringify))
+  }
+
  function init(){
    popTeamListing();
    populateTeamList();
