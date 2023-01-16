@@ -17,9 +17,9 @@
   <header>
     <nav>
       <ul class="uk-flex uk-flex-center">
-        <li><a href="">Home</a></li>
+        <li id="home-btn" jumpto="favorites" jumpfrom="nav"><a href="">Home</a></li>
         <li><a href="#modal" uk-toggle>Search</a></li>
-        <li jumpto="favorites" jumpfrom="nav"><a href="">Favorites</a></li>
+        <li id="favorites-btn" jumpto="favorites" jumpfrom="nav"><a href="">Favorites</a></li>
 
       </ul>
     </nav>
@@ -30,6 +30,7 @@
   <section id="games" class="invisible">
   </section>
   <section id="details" class="invisible"></section>
+  <section id="fav"></section>
 
   <div id="modal" uk-modal>
     <div class="uk-modal-dialog uk-modal-body">

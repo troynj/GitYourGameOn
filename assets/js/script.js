@@ -97,7 +97,7 @@ function tmBasketball(userSelection) {
           getTeamStats(away, awayIcon);
         });
         selectBtnEl.css("float", "right");
-        selectBtnEl.text("See Players");
+        selectBtnEl.text("Select");
 
         //append
         $("#games").append(gameListEl);
@@ -156,28 +156,11 @@ function setIcon(dataArr) {
 }
 
 function navigate(jumpFrom, jumpTo) {
+  jumpFrom === "nav" && (jumpFrom = document.querySelector("#visible"))
   $(`#${jumpFrom}`).toggleClass("visible invisible");
   $(`#${jumpTo}`).toggleClass("visible invisible");
 }
 
-function popTeamListing() {
-  Object.keys(nbaTeams).forEach((el) => {
-    var teamBtn = $("<button>");
-
-    teamBtn.addClass("uk-padding uk-button uk-button-secondary");
-    teamBtn.addClass("uk-flex-center@l");
-    teamBtn.attr("id", "team-select");
-    //teamBtn.addClass("uk-background-muted uk-padding"
-    //teamBtn.text(el);
-
-    var teamArr = el.split(" ");
-    teamBtn.click(() => {
-      tmBasketball(teamArr[teamArr.length - 1]);
-      navigate("teams", "games");
-    });
-    $("#teams").append(teamBtn);
-  });
-}
 
 var nbaTeams = {
   "Los Angeles Lakers": ["237", "472", "117"],
@@ -211,6 +194,31 @@ var nbaTeams = {
   "Detroit Pistons": ["17896075", "54", "482"],
   "Orlando Magic": ["28", "38017683", "165"],
 };
+
+function popTeamListing() {
+  Object.keys(nbaTeams).forEach((el) => {
+    var teamBtn = $("<button>");
+
+    teamBtn.addClass("uk-flex-center@l");
+    teamBtn.attr("id", "team-select");
+    teamBtn.addClass("uk-background-muted uk-padding")
+    teamBtn.text(el);
+    teamBtn.hover(() => {
+          teamBtn.addClass("uk-button-secondary");
+
+    })
+    teamBtn.mouseleave(() => {
+      teamBtn.removeClass("uk-button-secondary");
+    })
+
+    var teamArr = el.split(" ");
+    teamBtn.click(() => {
+      tmBasketball(teamArr[teamArr.length - 1]);
+      navigate("teams", "games");
+    });
+    $("#teams").append(teamBtn);
+  });
+}
 
 //This fetch request retrieves the 3 player stats for the selected NBA team
 function bdlStatsApi(playerId, playerStatsType) {
@@ -296,23 +304,15 @@ function getTeamStats(inputTeam, icon) {
 }
 
 function getPlayerStats(stats) {
-  //PTS, REB, AST, FG%
-  // console.log(stats);
-  var playerName =
-    stats.first_name + " " + stats.last_name + " (" + stats.position + ")";
-  var team = stats.team.full_name;
-  var pts = stats.pts.toFixed(1);
-  var totReb = (stats.oreb + stats.dreb).toFixed(1);
-  var ast = stats.ast.toFixed(1);
-  var fgp = (stats.fg_pct * 100).toFixed(1);
 
   return {
-    Player: playerName,
-    Team: team,
-    PTS: pts,
-    REB: totReb,
-    AST: ast,
-    "FG%": fgp + "%",
+  Player :
+    stats.first_name + " " + stats.last_name + " (" + stats.position + ")",
+  Team : stats.team.full_name,
+  PTS : stats.pts.toFixed(1),
+  REB : (stats.oreb + stats.dreb).toFixed(1),
+  AST : stats.ast.toFixed(1),
+  "FG%" : (stats.fg_pct * 100).toFixed(1),
   };
 }
 
@@ -346,7 +346,8 @@ function displayPlayerStats(pStatObj) {
       titleEl.text(value);
       listEl.append(titleEl);
       playerCardEl.attr("player-card", value);
-    } else {
+    } else if (key === "Team"){}
+    else {
       listEl.text(key + ": " + value);
     }
     //Append the ul element with the stat or name
@@ -419,18 +420,30 @@ function displayPlayerProfile(player) {
 })
 }
 
+$("#home-btn").click(() => {navigate("nav", "teams")})
+$("#modal-favorite").click(() => {
+  console.log("hi")
+  populateFavorites()
+  navigate("nav", "fav")
+})
 
 function clearSearch() {
   $("#tmhere").empty()
 }
 
-
+function populateFavorites() {
+  var myFavorites = getLocalStorage()
+  Object.entries(myFavorites).forEach((el) => {
+    console.log(el)
+  })
+}
 
 function addLocalStorage(addToStorage) {
   var storage = getLocalStorage() ?? {};
   $.extend(storage, addToStorage);
   setLocalStorage(storage);
 }
+
 function setLocalStorage(favoritePlayers) {
   localStorage.setItem(
     "favoritePlayersStringify",
@@ -438,11 +451,9 @@ function setLocalStorage(favoritePlayers) {
   );
 }
 
-
-
 function getLocalStorage() {
-  if (localStorage.getItem("username") !== null) {
-    return JSON.parse(localStorage.getItem("favoritePlayerStringify"));
+  if (localStorage.getItem("favoritePlayersStringify") !== null) {
+    return JSON.parse(localStorage.getItem("favoritePlayersStringify"));
   }
 }
 
