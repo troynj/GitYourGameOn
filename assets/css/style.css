@@ -1,10 +1,13 @@
 
 * {
     font-family: 'Bebas Neue', cursive;
+
+    /* width: auto; */
 }
 
 header {
     background-color: rgb(20, 20, 20);
+    width: auto;
 }
 
 body {
@@ -83,11 +86,12 @@ nav li {
 }
 
 #wrapper > button{
-    width: 100%;
+    width: auto;
 }
 
-
-
+.main-header {
+    font-weight: 500;
+}
 
 section ul li article {
     margin: 0px;
@@ -127,7 +131,7 @@ article {
 }
 .gamesContainer{
     overflow: auto;
-    height: 75vh; 
+    height: 87vh; 
 }
 
 #game-card {
@@ -139,10 +143,6 @@ body {
     transition: background-image 0.5s ease-in-out;
 }
 
-
-/* #gameLi {
-    display: inline;
-} */
 
 #team-select{
     font-size: 85%;
@@ -165,5 +165,11 @@ i{
     }
     #wrapper {
         flex-direction: column;
+    }
+    .mask {
+        display: none;
+    }
+    button#team-select {
+        margin: 0;
     }
   }
