@@ -38,8 +38,9 @@
   </header>
 
   <!-- <button id="myBtn"></button> -->
-  <section id="teams" class="visible uk-child-width-1-6 uk-text-center"><h2 class="uk-width-1-1">Select your favorite NBA to see upcoming games & stats</h2></section>
-  <section id="games" class="invisible"><h2 id="initInfo"></h2>
+  <section id="teams" class="visible uk-child-width-1-6 uk-text-center"><h2 class="uk-width-1-1 main-header">Select your favorite NBA to see upcoming games & stats</h2></section>
+  <section id="games" class="invisible">
+    <div uk-scrollspy="target: > div; cls: uk-animation-fade; delay: 200" id="initInfo"></div>
   </section>
   <section id="details" class="invisible uk-flex-center uk-flex-column"><h2 id="Gameinfo"></h2><div id="wrapper"></div><div id="link"></div></section>
   <section id="fav" class="invisible"></section>

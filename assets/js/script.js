@@ -42,18 +42,18 @@ function tmBasketball(userSelection) {
       // console.log(data);
       // _embedded.events[0].dates.start.localDate
       // _embedded.events[0].dates.start.localDate
-      var gameListEl = $("<div>");
-      gameListEl.addClass("gamesContainer");
+      var gameListEl = $("#initInfo");
+      gameListEl.addClass('gamesContainer')
 
       data._embedded.events.forEach((el, i) => {
         //create
         var gameEl = $("<div>");
         gameEl.addClass("uk-flex-center");
+        gameEl.addClass("uk-card");
         gameEl.css("background-color", "#ffffffd9");
-        gameEl.css("margin", "15px 10px");
-        gameEl.css("margin", "15px 10px");
+        gameEl.css("margin", "10px 0px");
         var selectBtnEl = $("<button>");
-        selectBtnEl.addClass("uk-button uk-button-secondary");
+        selectBtnEl.addClass("uk-button uk-button-secondary mask");
         //array deconstructor assigned values by splitting value from click event with regex
         // var [home, away] = data._embedded.events[i].name.split(
         //   /[\sv\s]|[\sv.\s]|[\svs\s]|[\svs.\s]/
@@ -86,7 +86,10 @@ function tmBasketball(userSelection) {
         gameEl.append(nameContainer);
         //set
         nameContainer.text(gameName);
-        nameContainer.css("font-size", "40px");
+        nameContainer.css({
+          "font-size": "40px",
+          "color": "black"
+        });
         gameEl.append(nameContainer);
 
         gameEl.attr("jumpto", "details");
@@ -132,7 +135,7 @@ function tmBasketball(userSelection) {
 }
 
 function displayGameInfo(gameName, gameTime) {
-  var infoText = `Selected: ${gameName} at ${gameTime}`;
+  var infoText = `${gameName} at ${gameTime}`
   var innerDiv = $("<div>");
   innerDiv.text(infoText);
   $("#Gameinfo").append(innerDiv);
@@ -356,8 +359,10 @@ function displayGameLink(gameName, gameLink) {
 
   gameLinkEl.attr('href', gameLink);
   gameLinkEl.text("Purchase Tickets - " + gameName).css({
-    "background-color": "black",
-    "color": "white"
+    "background-color": "rgb(120, 153, 203)",
+    "color": "white",
+    "margin-top": "15px",
+    "font-size": "25px"
   });
   $("#link").append(gameLinkEl);
 }
