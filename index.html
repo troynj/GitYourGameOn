@@ -16,9 +16,9 @@
 <body class="uk-background-cover">
   <header>
     <nav>
-      <ul class="uk-flex ">
+      <ul class="uk-flex">
         <li id="home-nav" jumpto="favorites" jumpfrom="nav"><a href="">Home</a></li>
-        <div>
+        <div class="uk-flex">
         <li id="search-btn"><a href="#modal" uk-toggle>Search</a></li>
         <li id="favorites-nav" jumpto="favorites" jumpfrom="nav"><a href="">Favorites</a></li>
         </div>
@@ -28,9 +28,9 @@
 
   <!-- <button id="myBtn"></button> -->
   <section id="teams" class="visible uk-child-width-1-6 uk-text-center"></section>
-  <section id="games" class="invisible">
+  <section id="games" class="invisible"><h2 id="initInfo"></h2>
   </section>
-  <section id="details" class="invisible"><div id="wrapper"></div></section>
+  <section id="details" class="invisible uk-flex-center uk-flex-column"><h2 id="Gameinfo"></h2><div id="wrapper"><div id="link"></div></div></section>
   <section id="fav" class="invisible"></section>
 
   <div id="modal" uk-modal>

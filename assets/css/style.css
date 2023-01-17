@@ -26,6 +26,7 @@ nav ul {
     justify-content: space-between;
 }
 
+
 nav li {
     margin-left: 15px;
     margin-right: 15px;
@@ -146,3 +147,9 @@ body {
 #team-select{
     font-size: 85%;
 }
+
+@media screen and (min-width: 1000px) {
+    #team-btn {
+      width: 100%;
+    }
+  }
