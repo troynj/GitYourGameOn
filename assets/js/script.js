@@ -9,18 +9,16 @@
 // var bodyBackground = $('body');
 // var backgrounds = new Array(
 //   'url(https://images.unsplash.com/photo-1499754162586-08f451261482?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)',
-//   'url(https://images.unsplash.com/photo-1533923156502-be31530547c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)',
-//   'url(http://placekitten.com/300)',
-//   'url(http://placekitten.com/400)'
+//   'url(https://images.unsplash.com/photo-1533923156502-be31530547c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)'
 // );
-
 // var current = 0;
+
 // function nextBackground() {
 //   current++;
 //   current = current % backgrounds.length;
-//   header.css('background-image', backgrounds[current]);
+//   bodyBackground.css('background-image', backgrounds[current]);
 // }
-// setInterval(nextBackground, 3000);
+// setInterval(nextBackground, 5000);
 // bodyBackground.css('background-image', backgrounds[0]);
 
 // nextBackground();
@@ -41,16 +39,21 @@ function tmBasketball(userSelection) {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
-      var gameListEl = $("<div>");
+      // console.log(data);
+      // _embedded.events[0].dates.start.localDate
+      // _embedded.events[0].dates.start.localDate
+      var gameListEl = $("#initInfo");
+      gameListEl.addClass('gamesContainer')
+
       data._embedded.events.forEach((el, i) => {
         //create
         var gameEl = $("<div>");
         gameEl.addClass("uk-flex-center");
+        gameEl.addClass("uk-card");
         gameEl.css("background-color", "#ffffffd9");
-        gameEl.css("margin", "15px 10px");
+        gameEl.css("margin", "10px 0px");
         var selectBtnEl = $("<button>");
-        selectBtnEl.addClass("uk-button uk-button-secondary");
+        selectBtnEl.addClass("uk-button uk-button-secondary mask");
         //array deconstructor assigned values by splitting value from click event with regex
         // var [home, away] = data._embedded.events[i].name.split(
         //   /[\sv\s]|[\sv.\s]|[\svs\s]|[\svs.\s]/
@@ -68,14 +71,25 @@ function tmBasketball(userSelection) {
         var awayIcon = setIcon(
           data._embedded.events[i]._embedded.attractions[1].images
         );
-        var nameContainer = $("<p>");
-        // nameContainer.css("display", "inline");
-        nameContainer.addClass("uk-flex-inline");
+        //Gets the Link to the game selected
+        var gameLink = data._embedded.events[i].url;
         var gameName = data._embedded.events[i].name;
+        var time = data._embedded.events[i].dates.start.localTime;
+        var gameTime = setGameTime(time);
+        // console.log(time);
+        // console.log(gameTime);
+
+        var nameContainer = $("<p>");
+        nameContainer.addClass("uk-flex-inline");
+        // nameContainer.css("display", "inline");
+
         gameEl.append(nameContainer);
         //set
         nameContainer.text(gameName);
-        nameContainer.css("font-size", "40px");
+        nameContainer.css({
+          "font-size": "40px",
+          "color": "black"
+        });
         gameEl.append(nameContainer);
 
         gameEl.attr("jumpto", "details");
@@ -87,7 +101,7 @@ function tmBasketball(userSelection) {
         gameEl.attr("homeIcon", homeIcon);
         gameEl.attr("awayIcon", awayIcon);
 
-        gameEl.click(() => {
+        gameEl.click((event) => {
           // console.log(event.currentTarget.attributes[0].value);
           // console.log(event.currentTarget.attributes[1].value);
 
@@ -98,6 +112,10 @@ function tmBasketball(userSelection) {
           $("#games").empty();
           getTeamStats(home, homeIcon);
           getTeamStats(away, awayIcon);
+          // displayGameLink(gameDate, gameLink);
+          displayGameInfo(gameDate, gameTime, gameLink);
+          // console.log(gameLink);
+          // console.log(gameName);
         });
         selectBtnEl.css("float", "right");
         selectBtnEl.text("Select");
@@ -109,11 +127,31 @@ function tmBasketball(userSelection) {
 
         // adds game date to games page
         var gameDate = data._embedded.events[i].dates.start.localDate;
-        console.log(gameDate);
+        // console.log(gameDate);
 
         gameEl.append(gameDate);
       });
     });
+}
+
+function displayGameInfo(gameDate, gameTime, gameLink) {
+
+  var linkEl = $('<button>');
+  linkEl.text(`Purchase Tickets for\n ${gameDate} at ${gameTime}`)
+  linkEl.attr('id', 'game-link');
+  $('#details').prepend(linkEl);
+
+  linkEl.click(() => {
+    window.open(gameLink);
+  })
+
+
+}
+
+function setGameTime(time) {
+  var [hourString, minute] = time.split(":");
+  var hour = +hourString % 24;
+  return (hour % 12 || 12) + ":" + minute + (hour < 12 ? "AM" : "PM");
 }
 
 function setTeamNames(gameStr) {
@@ -156,9 +194,11 @@ function setIcon(dataArr) {
 }
 
 function navigate(jumpFrom, jumpTo) {
-  console.log(jumpFrom)
-  console.log(jumpTo)
-  if (jumpFrom === jumpTo) return;
+
+  //console.log(jumpFrom)
+  //console.log(jumpTo)
+  //if (jumpFrom === jumpTo) return;
+
   jumpFrom === "nav"
     ? $(".visible").toggleClass("visible invisible")
     : $(`#${jumpFrom}`).toggleClass("visible invisible");
@@ -194,7 +234,7 @@ var nbaTeams = {
   "Atlanta Hawks": ["490", "101", "334"],
   "Indiana Pacers": ["3547245", "452", "210"],
   "Charlotte Hornets": ["3547239", "204", "403"],
-  "Detroit Pistons": ["17896075", "54", "482"],
+  "Detroit Pistons": ["17896075", "54", "3547241"],
   "Orlando Magic": ["28", "38017683", "165"],
 };
 
@@ -203,8 +243,8 @@ function popTeamListing() {
     var teamBtn = $("<button>");
 
     teamBtn.addClass("uk-flex-center@l");
-    teamBtn.attr("id", "team-select");
-    teamBtn.addClass("uk-background-muted uk-padding");
+    // teamBtn.attr("id", "team-select");
+    teamBtn.addClass("uk-background-muted team-btn");
     teamBtn.text(el);
     teamBtn.hover(() => {
       teamBtn.addClass("uk-button-secondary");
@@ -215,15 +255,18 @@ function popTeamListing() {
 
     var teamArr = el.split(" ");
     teamBtn.click(() => {
+
       tmBasketball(teamArr[teamArr.length - 1]);
       navigate("teams", "games");
     });
     $("#teams").append(teamBtn);
+    // console.log(teamBtn.val());
   });
 }
 
 //This fetch request retrieves the 3 player stats for the selected NBA team
 function bdlStatsApi(playerId, playerStatsType) {
+  // console.log(playerId, '==========');
   var requestUrl = `https://www.balldontlie.io/api/v1/season_averages?player_ids[]=${playerId}`;
 
   fetch(requestUrl)
@@ -290,12 +333,9 @@ function getTeamStats(inputTeam, icon) {
   teamEl.css("background-image", `url("${icon}")`);
   teamEl.css("text-align", "center");
   titleCardEl.css("color", "white");
-  titleCardEl.css("-webkit-text-stroke-width", "1px");
-  titleCardEl.css("-webkit-text-stroke-color", "black");
-  titleCardEl.css("background-color", "transparent");
   titleEl.text(inputTeam);
 
-  $("#details").append(teamEl);
+  $("#wrapper").append(teamEl);
   teamEl.append(titleCardEl);
   titleCardEl.append(titleEl);
   // console.log(teamEl);
@@ -316,8 +356,16 @@ function getPlayerStats(stats) {
     REB: (stats.oreb + stats.dreb).toFixed(1),
     AST: stats.ast.toFixed(1),
     "FG%": (stats.fg_pct * 100).toFixed(1),
+    Player:
+      stats.first_name + " " + stats.last_name + " (" + stats.position + ")",
+    Team: stats.team.full_name,
+    PTS: stats.pts.toFixed(1),
+    REB: (stats.oreb + stats.dreb).toFixed(1),
+    AST: stats.ast.toFixed(1),
+    "FG%": (stats.fg_pct * 100).toFixed(1),
   };
 }
+
 
 //This function displays a link to TicketMaster for the selected game
 
@@ -334,6 +382,7 @@ function displayGameLink(gameName, gameLink) {
   $("#link").append(gameLinkEl);
 }
 
+
 // code clean up. This function was nested within the other function already, solved in merge editor
 
 // function purchaseTickets(gameName, gameLink) {
@@ -348,14 +397,15 @@ function displayGameLink(gameName, gameLink) {
 
 function displayPlayerStats(pStatObj) {
   // console.log(pStatObj.Team)
-
   //Creating an element
   // console.log(pStatObj);
   var savedFav = false;
+
   var favArr = getLocalStorage() ?? [];
   var teamEl = $(`[team="${pStatObj.Team}"]`);
 
   console.log(favArr);
+
 
   var playerCardEl = $("<article>");
   var pstatsUl = $("<ul>");
@@ -384,8 +434,14 @@ function displayPlayerStats(pStatObj) {
     //create element
     var listEl = $("<li>");
 
+
     //Set the element with the stat or the name
 
+
+
+    //Set the element with the stat or the name
+    var favPlayer = $("<button>");
+    favPlayer.text();
     if (key === "Player") {
       var titleEl = $("<h3>");
       titleEl.css("margin-bottom", "0px");
@@ -395,17 +451,20 @@ function displayPlayerStats(pStatObj) {
 
       favArr.forEach((el) => {
         Object.entries(el).forEach(([lsKey, lsVal]) => {
-          var nameArr = value.split(" ");
-          var frankenstein = nameArr[0] + " " + nameArr[1];
-          console.log(frankenstein);
-          console.log(lsVal);
-          console.log(lsKey);
+
+          var nameArr = value.split(" ")
+          var frankenstein = nameArr[0] + " " + nameArr[1]
+          // console.log(frankenstein)
+          // console.log(lsVal)
+          // console.log(lsKey)
           if (lsKey === "Name" && lsVal === frankenstein) {
-            console.log(lsVal);
-            starBtnEl.css("color", "#ffc400");
+            // console.log(lsVal)
+            starBtnEl.css("color", "#ffc400")
           }
-        });
-      });
+
+        })
+      })
+
     } else if (key === "Team") {
     } else {
       listEl.text(key + ": " + value);
@@ -413,6 +472,7 @@ function displayPlayerStats(pStatObj) {
     //Append the ul element with the stat or name
     pstatsUl.append(listEl);
     pstatsUl.css("list-style", "none");
+
   });
 }
 
@@ -467,7 +527,7 @@ function setPlayerProfile(stats) {
   };
 }
 function displayPlayerProfile(player) {
-  console.log(player);
+  // console.log(player);
   clearSearch();
   Object.entries(player).forEach(([key, value]) => {
     var listItem = $("<li>");
@@ -477,7 +537,6 @@ function displayPlayerProfile(player) {
 
   $("#modal-favorites").click(() => {
     addLocalStorage(player);
-    console.log(localStorage.getItem("favoritePlayersStringify"));
   });
 
   $("#modal-close").click(() => {
@@ -499,6 +558,7 @@ $("#home-nav").click(() => {
 
 $("#favorites-nav").click((event) => {
   event.preventDefault();
+
   var current = document.querySelector(".visible");
   console.log(current);
   if (current.id === "fav") {
@@ -508,7 +568,40 @@ $("#favorites-nav").click((event) => {
     navigate("nav", "fav");
     displayFavorites();
   }
+
 });
+
+function displayFavorites() {
+  var favObj = getLocalStorage() ?? {};
+
+  Object.values(favObj).forEach((el, i) => {
+    var outerList = $("#accordion");
+    var outerItem = $('<li>');
+    outerItem.attr('id', 'outer-li')
+
+    var titelEl = $("<a>");
+    titelEl.addClass('uk-accordion-title');
+    titelEl.attr('href', `#player-details${i}`);
+    titelEl.text(el.Name);
+
+    console.log(el.Name);
+
+    var innerList = $("<ul>").attr('id', `player-details${i}`);
+    innerList.addClass("uk-accordion-content");
+    Object.entries(el).forEach(([key, value]) => {
+      var innerItem = $("<li>");
+      if (key !== "Name") {
+        innerItem.text(key + ": " + value);
+      }
+
+      outerList.append(outerItem);
+      outerItem.append(titelEl);
+      innerList.append(innerItem);
+      outerItem.append(innerList);
+    });
+    // $("#fav").append(listEl);
+  });
+}
 
 function clearSearch() {
   $("#tmhere").empty();
@@ -521,7 +614,7 @@ function populateFavorites() {
   Object.entries(myFavorites).forEach(([key, value]) => {
     player[key] = value;
   });
-  console.log(player);
+  // console.log(player);
 }
 
 function subLocalStorage(subLS) {
@@ -549,9 +642,11 @@ function subLocalStorage(subLS) {
 
 function addLocalStorage(addLS) {
   var storage = getLocalStorage() ?? [];
+
   storage.push(addLS);
   window.localStorage.removeItem("favoritePlayersStringify");
   $("#fav").empty()
+
   setLocalStorage(storage);
 }
 
@@ -567,6 +662,7 @@ function getLocalStorage() {
     return JSON.parse(localStorage.getItem("favoritePlayersStringify"));
   }
 }
+
 
 function init() {
   popTeamListing();
