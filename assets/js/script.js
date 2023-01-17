@@ -33,7 +33,7 @@ function tmBasketball(userSelection) {
   var keywordStr = `keyword="${userSelection}"`;
   var reqUrl = `${baseUrl}${searchBy}?${apiKey}&${keywordStr}&${subGenreId}`;
 
-  // console.log(reqUrl);
+  
   fetch(reqUrl)
     .then((response) => {
       return response.json();
