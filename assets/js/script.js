@@ -112,8 +112,8 @@ function tmBasketball(userSelection) {
           $("#games").empty();
           getTeamStats(home, homeIcon);
           getTeamStats(away, awayIcon);
-          displayGameLink(gameName, gameLink);
-          displayGameInfo(gameName, gameTime);
+          // displayGameLink(gameDate, gameLink);
+          displayGameInfo(gameDate, gameTime, gameLink);
           // console.log(gameLink);
           // console.log(gameName);
         });
@@ -134,11 +134,19 @@ function tmBasketball(userSelection) {
     });
 }
 
-function displayGameInfo(gameName, gameTime) {
-  var infoText = `${gameName} at ${gameTime}`
-  var innerDiv = $("<div>");
-  innerDiv.text(infoText);
-  $("#Gameinfo").append(innerDiv);
+function displayGameInfo(gameDate, gameTime, gameLink) {
+  // var innerDiv = $("<div>");
+  var linkEl = $('<button>');
+  linkEl.text(`Purchase Tickets for\n ${gameDate} at ${gameTime}`)
+  linkEl.attr('id', 'game-link');
+  $('#details').prepend(linkEl);
+  
+  linkEl.click(() => {
+    window.open(gameLink);
+  })
+
+  // var infoText = `${gameDate} at ${gameTime}`
+  // innerDiv.text(infoText);
 }
 
 function setGameTime(time) {
@@ -231,7 +239,7 @@ function popTeamListing() {
     var teamBtn = $("<button>");
 
     teamBtn.addClass("uk-flex-center@l");
-    teamBtn.attr("id", "team-select");
+    // teamBtn.attr("id", "team-select");
     teamBtn.addClass("uk-background-muted team-btn");
     teamBtn.text(el);
     teamBtn.hover(() => {
@@ -352,20 +360,15 @@ function getPlayerStats(stats) {
 
 //This function displays a link to TicketMaster for the selected game
 
-function displayGameLink(gameName, gameLink) {
-  // console.log(gameName);
-  // console.log(gameLink);
-  var gameLinkEl = $("<a>");
+// function displayGameLink(gameDate, gameLink) {
+//   // console.log(gameName);
+//   // console.log(gameLink);
+//   var gameLinkEl = $("<a>");
 
-  gameLinkEl.attr('href', gameLink);
-  gameLinkEl.text("Purchase Tickets - " + gameName).css({
-    "background-color": "rgb(120, 153, 203)",
-    "color": "white",
-    "margin-top": "15px",
-    "font-size": "25px"
-  });
-  $("#link").append(gameLinkEl);
-}
+//   gameLinkEl.attr('href', gameLink);
+//   gameLinkEl.text("Purchase Tickets - " + gameDate);
+//   $("#link").append(gameLinkEl);
+// }
 
 
 // code clean up. This function was nested within the other function already, solved in merge editor
