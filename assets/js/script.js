@@ -23,7 +23,6 @@
 
 // nextBackground();
 
-
 function tmBasketball(userSelection) {
   // console.log(userSelection);
   var apiKey = `apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
@@ -43,7 +42,7 @@ function tmBasketball(userSelection) {
       // _embedded.events[0].dates.start.localDate
       // _embedded.events[0].dates.start.localDate
       var gameListEl = $("#initInfo");
-      gameListEl.addClass('gamesContainer')
+      gameListEl.addClass("gamesContainer");
 
       data._embedded.events.forEach((el, i) => {
         //create
@@ -88,7 +87,7 @@ function tmBasketball(userSelection) {
         nameContainer.text(gameName);
         nameContainer.css({
           "font-size": "40px",
-          "color": "black"
+          color: "black",
         });
         gameEl.append(nameContainer);
 
@@ -135,17 +134,14 @@ function tmBasketball(userSelection) {
 }
 
 function displayGameInfo(gameDate, gameTime, gameLink) {
-
-  var linkEl = $('<button>');
-  linkEl.text(`Purchase Tickets for\n ${gameDate} at ${gameTime}`)
-  linkEl.attr('id', 'game-link');
-  $('#details').prepend(linkEl);
+  var linkEl = $("<button>");
+  linkEl.text(`Purchase Tickets for\n ${gameDate} at ${gameTime}`);
+  linkEl.attr("id", "game-link");
+  $("#details").prepend(linkEl);
 
   linkEl.click(() => {
     window.open(gameLink);
-  })
-
-
+  });
 }
 
 function setGameTime(time) {
@@ -194,7 +190,6 @@ function setIcon(dataArr) {
 }
 
 function navigate(jumpFrom, jumpTo) {
-
   //console.log(jumpFrom)
   //console.log(jumpTo)
   //if (jumpFrom === jumpTo) return;
@@ -255,7 +250,6 @@ function popTeamListing() {
 
     var teamArr = el.split(" ");
     teamBtn.click(() => {
-
       tmBasketball(teamArr[teamArr.length - 1]);
       navigate("teams", "games");
     });
@@ -265,7 +259,8 @@ function popTeamListing() {
 }
 
 //This fetch request retrieves the 3 player stats for the selected NBA team
-function bdlStatsApi(playerId, playerStatsType) {
+function bdlStatsApi(playerId, playerStatsType, favShortcut) {
+  console.log("favShortcut", favShortcut);
   // console.log(playerId, '==========');
   var requestUrl = `https://www.balldontlie.io/api/v1/season_averages?player_ids[]=${playerId}`;
 
@@ -278,11 +273,15 @@ function bdlStatsApi(playerId, playerStatsType) {
       // console.log(stats)
       /*After the fetch for player stats is completed, a second fetch command and this passes
      the data from the first API request on to the second API request for names*/
-      bdlNamesApi(playerId, stats.data[0], playerStatsType);
+      bdlNamesApi(playerId, stats.data[0], playerStatsType, favShortcut);
     });
 }
 // This function fetched the player names and combine player stats
-function bdlNamesApi(playerId, playerStats, playerStatsType) {
+function bdlNamesApi(playerId, playerStats, playerStatsType, favShortcut) {
+  // console.log("playerId", playerId)
+  // console.log("playerStats", playerStats)
+  // console.log("playerStatsType", playerStatsType)
+  // console.log("favShortcut", favShortcut)
   var requestUrl = `https://www.balldontlie.io/api/v1/players/${playerId}`;
 
   // console.log(requestUrl)
@@ -296,27 +295,37 @@ function bdlNamesApi(playerId, playerStats, playerStatsType) {
       $.extend(playerStats, stats);
       // console.log(playerStats)
       //Passes player stats to the displayPlayerStats function
-      playerStatsType == "short"
-        ? displayPlayerStats(getPlayerStats(playerStats))
-        : displayPlayerProfile(setPlayerProfile(playerStats));
+      if (playerStatsType == "short") {
+        displayPlayerStats(getPlayerStats(playerStats));
+      } else {
+        if (favShortcut) {
+          addLocalStorage(setPlayerProfile(playerStats));
+          console.log("CORRECT IF CONDITION")
+        } else {
+          displayPlayerProfile(setPlayerProfile(playerStats));
+        }
+      }
     });
 }
 
 /* This function fetches players that match the input name and then identifies the player name that also have a team that matches the selected team*/
-function getPlayerId(playerSearched, team, playerStatsType) {
+function getPlayerId(playerSearched, team, playerStatsType, favShortcut) {
+  console.log("===TEAM", team)
+  // console.log("entered");
+ console.log("favShortcut", favShortcut);
   var requestUrl = `https://www.balldontlie.io/api/v1/players?search=${playerSearched}`;
 
   fetch(requestUrl)
     .then((response) => {
       if (response.status != 200) {
-        console.log(response.status);
+        // console.log(response.status);
       }
       return response.json();
     })
     .then((stats) => {
       stats.data.forEach((el) => {
         if (team === el.team.full_name) {
-          bdlStatsApi(el.id, playerStatsType);
+          bdlStatsApi(el.id, playerStatsType, favShortcut);
         }
       });
     });
@@ -366,7 +375,6 @@ function getPlayerStats(stats) {
   };
 }
 
-
 //This function displays a link to TicketMaster for the selected game
 
 function displayGameLink(gameName, gameLink) {
@@ -382,7 +390,6 @@ function displayGameLink(gameName, gameLink) {
   $("#link").append(gameLinkEl);
 }
 
-
 // code clean up. This function was nested within the other function already, solved in merge editor
 
 // function purchaseTickets(gameName, gameLink) {
@@ -396,49 +403,57 @@ function displayGameLink(gameName, gameLink) {
 // }
 
 function displayPlayerStats(pStatObj) {
-  // console.log(pStatObj.Team)
-  //Creating an element
-  // console.log(pStatObj);
-  var savedFav = false;
-
   var favArr = getLocalStorage() ?? [];
   var teamEl = $(`[team="${pStatObj.Team}"]`);
-
-  console.log(favArr);
-
-
   var playerCardEl = $("<article>");
   var pstatsUl = $("<ul>");
+  var inputPlayerArr = pStatObj.Player.split(" ");
+  var inputPlayerStr = inputPlayerArr[0] + " " + inputPlayerArr[1];
 
+  // console.log(pStatObj)
   //beginning of star code
   var starBtnEl = $("<i>");
   starBtnEl.addClass("fas fa-star");
-  // starBtnEl.click(() => {
-  //   getPlayerId(pStatObj.Team, pStatObj.Name, "long");
-  // })
+  starBtnEl.click(() => {
+    console.log(inputPlayerStr);
+    var checkFav = getLocalStorage() || {};
+    var checkFavArr = Object.values(checkFav);
+    // console.log(checkFavArr)
+    // console.log(checkFavArr.length == false)
+    if (!checkFav.length) {
+      getPlayerId(inputPlayerStr, pStatObj.Team, "long", true);
+    } else {
+      Object.values(checkFav).forEach((el) => {
+        Object.entries(el).forEach(([key, value]) => {
+          console.log(key);
+          console.log(key === "Player");
+          if (key == "Name") {
+            // console.log(inputPlayerStr);
+            // console.log(value);
+            console.log("PSO.TEAM" ,pStatObj.Team)
+
+            if (value !== inputPlayerStr)
+
+            console.log("PSO.TEAM" ,pStatObj.Team)
+              getPlayerId(inputPlayerStr, pStatObj.Team, "long", true);
+            console.log(inputPlayerStr, "Added to Favorites");
+          }
+        });
+      });
+    }
+  });
   playerCardEl.append(starBtnEl);
   //end of star code
 
   playerCardEl.css("position", "relative");
   teamEl.attr("id", "team-card");
-
   pstatsUl.css("background-color", "#ffffffd9");
-  // pstatsUl.css("width", "fit-content")
-  // pstatsUl.css("box-shadow", "20px 0px 20px 15px #ffffff80")
-
   teamEl.append(playerCardEl);
   playerCardEl.append(pstatsUl);
   // Append that element to the Div tag with ID = "player-stats-card"
-  //$("#player-stats-card").append(pstatsUl);
   Object.entries(pStatObj).forEach(([key, value]) => {
     //create element
     var listEl = $("<li>");
-
-
-    //Set the element with the stat or the name
-
-
-
     //Set the element with the stat or the name
     var favPlayer = $("<button>");
     favPlayer.text();
@@ -451,20 +466,17 @@ function displayPlayerStats(pStatObj) {
 
       favArr.forEach((el) => {
         Object.entries(el).forEach(([lsKey, lsVal]) => {
-
-          var nameArr = value.split(" ")
-          var frankenstein = nameArr[0] + " " + nameArr[1]
+          var nameArr = value.split(" ");
+          var frankenstein = nameArr[0] + " " + nameArr[1];
           // console.log(frankenstein)
           // console.log(lsVal)
           // console.log(lsKey)
           if (lsKey === "Name" && lsVal === frankenstein) {
             // console.log(lsVal)
-            starBtnEl.css("color", "#ffc400")
+            starBtnEl.css("color", "#ffc400");
           }
-
-        })
-      })
-
+        });
+      });
     } else if (key === "Team") {
     } else {
       listEl.text(key + ": " + value);
@@ -472,7 +484,6 @@ function displayPlayerStats(pStatObj) {
     //Append the ul element with the stat or name
     pstatsUl.append(listEl);
     pstatsUl.css("list-style", "none");
-
   });
 }
 
@@ -543,7 +554,7 @@ function displayPlayerProfile(player) {
     // var current = document.querySelector(".visible");
     // if (current.id === "fav") {
     //   location.reload();
-  
+
     //   navigate("teams", "fav");
 
     // console.log("hi")
@@ -568,7 +579,6 @@ $("#favorites-nav").click((event) => {
     navigate("nav", "fav");
     displayFavorites();
   }
-
 });
 
 function displayFavorites() {
@@ -576,17 +586,17 @@ function displayFavorites() {
 
   Object.values(favObj).forEach((el, i) => {
     var outerList = $("#accordion");
-    var outerItem = $('<li>');
-    outerItem.attr('id', 'outer-li')
+    var outerItem = $("<li>");
+    outerItem.attr("id", "outer-li");
 
     var titelEl = $("<a>");
-    titelEl.addClass('uk-accordion-title');
-    titelEl.attr('href', `#player-details${i}`);
+    titelEl.addClass("uk-accordion-title");
+    titelEl.attr("href", `#player-details${i}`);
     titelEl.text(el.Name);
 
     console.log(el.Name);
 
-    var innerList = $("<ul>").attr('id', `player-details${i}`);
+    var innerList = $("<ul>").attr("id", `player-details${i}`);
     innerList.addClass("uk-accordion-content");
     Object.entries(el).forEach(([key, value]) => {
       var innerItem = $("<li>");
@@ -617,35 +627,35 @@ function populateFavorites() {
   // console.log(player);
 }
 
-function subLocalStorage(subLS) {
-  var storage = getLocalStorage() ?? []
-  var newStorage
-  console.log(storage)
-  Object.entries(storage).forEach(([key, value]) => {
-    
-    console.log(value)
-    
-    // console.log(subLS === value.Name)
-    if (subLS === value.Name){
-      console.log("entered")
-      // //delete still leaves null values in object
-      // delete storage[key]
-    }
-    else {
-      newStorage.push([key, value])
+// function subLocalStorage(subLS) {
+//   var storage = getLocalStorage() ?? []
+//   var newStorage
+//   console.log(storage)
+//   Object.entries(storage).forEach(([key, value]) => {
 
-    }
-  })
- 
-  storage && setLocalStorage(storage);
-}
+//     console.log(value)
+
+//     // console.log(subLS === value.Name)
+//     if (subLS === value.Name){
+//       console.log("entered")
+//       // //delete still leaves null values in object
+//       // delete storage[key]
+//     }
+//     else {
+//       newStorage.push([key, value])
+
+//     }
+//   })
+
+//   storage && setLocalStorage(storage);
+// }
 
 function addLocalStorage(addLS) {
   var storage = getLocalStorage() ?? [];
 
   storage.push(addLS);
   window.localStorage.removeItem("favoritePlayersStringify");
-  $("#fav").empty()
+  $("#fav").empty();
 
   setLocalStorage(storage);
 }
@@ -663,12 +673,13 @@ function getLocalStorage() {
   }
 }
 
+// function defibrillator() {
+
+// }
 
 function init() {
   popTeamListing();
   populateTeamList();
-  subLocalStorage("LeBron James")
-  console.log(getLocalStorage())
 }
 
 init();
