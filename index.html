@@ -17,10 +17,10 @@
   <header>
     <nav>
       <ul class="uk-flex ">
-        <li id="home-btn" jumpto="favorites" jumpfrom="nav"><a href="">Home</a></li>
+        <li id="home-nav" jumpto="favorites" jumpfrom="nav"><a href="">Home</a></li>
         <div>
         <li id="search-btn"><a href="#modal" uk-toggle>Search</a></li>
-        <li id="favorites-btn" jumpto="favorites" jumpfrom="nav"><a href="">Favorites</a></li>
+        <li id="favorites-nav" jumpto="favorites" jumpfrom="nav"><a href="">Favorites</a></li>
         </div>
       </ul>
     </nav>
@@ -30,8 +30,8 @@
   <section id="teams" class="visible uk-child-width-1-6 uk-text-center"></section>
   <section id="games" class="invisible">
   </section>
-  <section id="details" class="invisible uk-flex uk-flex-column"></section>
-  <section id="fav"></section>
+  <section id="details" class="invisible"><div id="wrapper"></div></section>
+  <section id="fav" class="invisible"></section>
 
   <div id="modal" uk-modal>
     <div class="uk-modal-dialog uk-modal-body">
@@ -40,7 +40,7 @@
       <div  class="uk-modal-footer uk-align-right">
         <ul id="tmhere"></ul>
         <button id="modal-close" class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
-        <button id="modal-favorite" class="uk-button uk-button-default" type="button">Favorite</button>
+        <button id="modal-favorites" class="uk-button uk-button-default" type="button">Favorite</button>
       </div>
     </div>
   </div>
