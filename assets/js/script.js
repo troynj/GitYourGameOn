@@ -135,18 +135,17 @@ function tmBasketball(userSelection) {
 }
 
 function displayGameInfo(gameDate, gameTime, gameLink) {
-  // var innerDiv = $("<div>");
+
   var linkEl = $('<button>');
   linkEl.text(`Purchase Tickets for\n ${gameDate} at ${gameTime}`)
   linkEl.attr('id', 'game-link');
   $('#details').prepend(linkEl);
-  
+
   linkEl.click(() => {
     window.open(gameLink);
   })
 
-  // var infoText = `${gameDate} at ${gameTime}`
-  // innerDiv.text(infoText);
+
 }
 
 function setGameTime(time) {
@@ -230,7 +229,7 @@ var nbaTeams = {
   "Atlanta Hawks": ["490", "101", "334"],
   "Indiana Pacers": ["3547245", "452", "210"],
   "Charlotte Hornets": ["3547239", "204", "403"],
-  "Detroit Pistons": ["17896075", "54", "482"],
+  "Detroit Pistons": ["17896075", "54", "3547241"],
   "Orlando Magic": ["28", "38017683", "165"],
 };
 
@@ -251,6 +250,7 @@ function popTeamListing() {
 
     var teamArr = el.split(" ");
     teamBtn.click(() => {
+
       tmBasketball(teamArr[teamArr.length - 1]);
       navigate("teams", "games");
     });
@@ -261,6 +261,7 @@ function popTeamListing() {
 
 //This fetch request retrieves the 3 player stats for the selected NBA team
 function bdlStatsApi(playerId, playerStatsType) {
+  // console.log(playerId, '==========');
   var requestUrl = `https://www.balldontlie.io/api/v1/season_averages?player_ids[]=${playerId}`;
 
   fetch(requestUrl)
@@ -391,7 +392,7 @@ function displayPlayerStats(pStatObj) {
   var favArr = getLocalStorage() ?? []
   var teamEl = $(`[team="${pStatObj.Team}"]`);
 
-  console.log(favArr)
+  // console.log(favArr)
 
   var playerCardEl = $("<article>");
   var pstatsUl = $("<ul>");
@@ -403,7 +404,7 @@ function displayPlayerStats(pStatObj) {
   //   getPlayerId(pStatObj.Team, pStatObj.Name, "long");
   // })
   playerCardEl.append(starBtnEl);
-//end of star code
+  //end of star code
 
   playerCardEl.css("position", "relative");
   teamEl.attr("id", "team-card");
@@ -419,7 +420,7 @@ function displayPlayerStats(pStatObj) {
   Object.entries(pStatObj).forEach(([key, value]) => {
     //create element
     var listEl = $("<li>");
-    
+
 
     //Set the element with the stat or the name
     var favPlayer = $("<button>");
@@ -435,11 +436,11 @@ function displayPlayerStats(pStatObj) {
         Object.entries(el).forEach(([lsKey, lsVal]) => {
           var nameArr = value.split(" ")
           var frankenstein = nameArr[0] + " " + nameArr[1]
-          console.log(frankenstein)
-          console.log(lsVal)
-          console.log(lsKey)
-          if(lsKey === "Name" && lsVal === frankenstein ) {
-            console.log(lsVal)
+          // console.log(frankenstein)
+          // console.log(lsVal)
+          // console.log(lsKey)
+          if (lsKey === "Name" && lsVal === frankenstein) {
+            // console.log(lsVal)
             starBtnEl.css("color", "#ffc400")
           }
 
@@ -501,7 +502,7 @@ function setPlayerProfile(stats) {
   };
 }
 function displayPlayerProfile(player) {
-  console.log(player);
+  // console.log(player);
   clearSearch();
   Object.entries(player).forEach(([key, value]) => {
     var listItem = $("<li>");
@@ -532,21 +533,32 @@ $("#favorites-nav").click((event) => {
 function displayFavorites() {
   var favObj = getLocalStorage() ?? {};
 
-  Object.values(favObj).forEach((el) => {
-    var listEl = $("<ul>");
-    Object.entries(el).forEach(([key, value]) => {
-      var itemEl = $("<li>");
+  Object.values(favObj).forEach((el, i) => {
+    var outerList = $("#accordion");
+    var outerItem = $('<li>');
+    outerItem.attr('id', 'outer-li')
 
-      if (key === "Name") {
-        var titelEl = $("<h2>");
-        titelEl.text(value);
-        listEl.prepend(titelEl);
-      } else {
-        itemEl.text(key + ": " + value);
-        listEl.append(itemEl);
+    var titelEl = $("<a>");
+    titelEl.addClass('uk-accordion-title');
+    titelEl.attr('href', `#player-details${i}`);
+    titelEl.text(el.Name);
+
+    console.log(el.Name);
+
+    var innerList = $("<ul>").attr('id', `player-details${i}`);
+    innerList.addClass("uk-accordion-content");
+    Object.entries(el).forEach(([key, value]) => {
+      var innerItem = $("<li>");
+      if (key !== "Name") {
+        innerItem.text(key + ": " + value);
       }
+
+      outerList.append(outerItem);
+      outerItem.append(titelEl);
+      innerList.append(innerItem);
+      outerItem.append(innerList);
     });
-    $("#fav").append(listEl);
+    // $("#fav").append(listEl);
   });
 }
 

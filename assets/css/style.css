@@ -148,6 +148,14 @@ body {
     opacity: 95%;
 }
 
+#player-details li {
+    transform: translateX(5%);
+    width: fit-content;
+}
+
+a.uk-accordion-title {
+    width: 30vw;
+}
 
 i{
         position: absolute;
