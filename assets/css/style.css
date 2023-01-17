@@ -1,7 +1,6 @@
-
 * {
     font-family: 'Bebas Neue', cursive;
-    
+
     /* width: auto; */
 }
 
@@ -81,7 +80,7 @@ nav li {
     outline: 2px solid black;
 }
 
-#wrapper > button{
+#wrapper>button {
     width: auto;
 }
 
@@ -111,6 +110,7 @@ section ul li article {
 #details {
     text-align: center;
 }
+
 #details li {
     padding: 0 20px;
 }
@@ -125,9 +125,9 @@ article {
     box-shadow: inset 0 0 10px rgb(56, 70, 83);
 }
 
-.gamesContainer{
+.gamesContainer {
     overflow: auto;
-    height: 87vh; 
+    height: 88vh;
 }
 
 #game-card {
@@ -140,7 +140,7 @@ body {
 }
 
 
-.team-btn{
+.team-btn {
     font-size: 85%;
     height: 60px;
     margin: 5px;
@@ -154,14 +154,22 @@ body {
 }
 
 a.uk-accordion-title {
-    width: 30vw;
+    width: 65vw;
+    background-color: rgb(209, 188, 129);
+    padding: 5px;
 }
 
-i{
-        position: absolute;
-        bottom: 50px;
-        right: 40px;
-        /* color:#ffc400; */
+#accordion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+i {
+    position: absolute;
+    bottom: 50px;
+    right: 40px;
+    /* color:#ffc400; */
 }
 
 #link {
@@ -175,22 +183,26 @@ i{
     font-size: 25px;
     padding: 5px 10px 0px 10px;
     border-radius: 15px;
-  }
+}
 
 @media screen and (max-width: 1000px) {
     .team-btn {
-      width: 100%;
+        width: 100%;
     }
+
     nav ul {
         justify-content: space-around;
     }
+
     #wrapper {
         flex-direction: column;
     }
+
     .mask {
         display: none;
     }
+
     .team-btn {
         margin: 0;
     }
-  }
+}
