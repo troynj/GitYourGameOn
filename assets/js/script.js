@@ -32,7 +32,7 @@ function tmBasketball(userSelection) {
   var keywordStr = `keyword="${userSelection}"`;
   var reqUrl = `${baseUrl}${searchBy}?${apiKey}&${keywordStr}&${subGenreId}`;
 
-  // console.log(reqUrl);
+  
   fetch(reqUrl)
     .then((response) => {
       return response.json();
@@ -590,13 +590,16 @@ function displayFavorites() {
     outerItem.attr("id", "outer-li");
 
     var titelEl = $("<a>");
-    titelEl.addClass("uk-accordion-title");
-    titelEl.attr("href", `#player-details${i}`);
+
+    titelEl.addClass('uk-accordion-title');
+    titelEl.attr('href', `#`); //player-details${i}
+
     titelEl.text(el.Name);
 
     console.log(el.Name);
 
-    var innerList = $("<ul>").attr("id", `player-details${i}`);
+    var innerList = $("<ul>"); //.attr('id', `player-details${i}`)
+
     innerList.addClass("uk-accordion-content");
     Object.entries(el).forEach(([key, value]) => {
       var innerItem = $("<li>");
