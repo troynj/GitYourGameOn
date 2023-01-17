@@ -1,17 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/css/uikit.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
+    <title>GitYourGameOn</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/css/uikit.min.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/css/style.css" />
-  <title>GitYourGameOn</title>
-</head>
 
 <body class="uk-background-cover">
   <header>
@@ -31,23 +44,35 @@
   <section id="details" class="invisible uk-flex-center uk-flex-column"><h2 id="Gameinfo"></h2><div id="wrapper"></div><div id="link"></div></section>
   <section id="fav" class="invisible"></section>
 
-  <div id="modal" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body">
-      <h2 class="uk-modal-title">Player Search</h2>
-      <p class="uk-text-right" id="search"></p>
-      <div  class="uk-modal-footer uk-align-right">
-        <ul id="tmhere"></ul>
-        <button id="modal-close" class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
-        <button id="modal-favorites" class="uk-button uk-button-default" type="button">Favorite</button>
+
+    <div id="modal" uk-modal>
+      <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title">Player Search</h2>
+        <p class="uk-text-right" id="search"></p>
+        <div class="uk-modal-footer uk-align-right">
+          <ul id="tmhere"></ul>
+          <button
+            id="modal-close"
+            class="uk-button uk-button-default uk-modal-close"
+            type="button"
+          >
+            Close
+          </button>
+          <button
+            id="modal-favorites"
+            class="uk-button uk-button-default"
+            type="button"
+          >
+            Favorite
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!--jQuery-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/js/uikit.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/js/uikit-icons.min.js"></script>
-  <script src="./assets/js/script.js"></script>
-</body>
-
+    <!--jQuery-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.21/dist/js/uikit-icons.min.js"></script>
+    <script src="./assets/js/script.js"></script>
+  </body>
 </html>
