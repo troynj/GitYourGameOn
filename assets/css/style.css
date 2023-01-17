@@ -39,16 +39,38 @@ nav li {
     display: none;
 }
 
-#details {
+#wrapper {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+}
+
+#details button {
+    display: flex;
+    margin: auto;
+    font-size: 2em;
+}
+
+#details button:hover {
+    background-color: rgb(0, 0, 0);
+}
+
+#details a {
+    text-decoration: none;
+}
+
+#details a:hover {
+    color: rgb(120, 153, 203);
 }
 
 #team-card {
     border-radius: 25px;
     margin: 10px;
     outline: 2px solid black;
+}
+
+#wrapper > button{
+    width: 100%;
 }
 
 
@@ -70,7 +92,9 @@ section ul li article {
     /* border-radius: 25px 25px 0 0; */
 }
 
-
+#details {
+    text-align: center;
+}
 #details li {
     padding: 0 20px;
 }

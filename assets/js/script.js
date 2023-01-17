@@ -39,6 +39,8 @@ function tmBasketball(userSelection) {
     })
     .then((data) => {
       console.log(data);
+      // _embedded.events[0].dates.start.localDate
+      // _embedded.events[0].dates.start.localDate
       var gameListEl = $("<div>");
       data._embedded.events.forEach((el, i) => {
         //create
@@ -98,7 +100,7 @@ function tmBasketball(userSelection) {
           $("#games").empty();
           getTeamStats(home, homeIcon);
           getTeamStats(away, awayIcon);
-          displayGameLink(gameName, gameLink)
+          purchaseTickets(gameName, gameLink)
           // console.log(gameLink);
           // console.log(gameName);
 
@@ -294,7 +296,7 @@ function getTeamStats(inputTeam, icon) {
   titleCardEl.css("background-color", "transparent");
   titleEl.text(inputTeam);
 
-  $("#details").append(teamEl);
+  $("#wrapper").append(teamEl);
   teamEl.append(titleCardEl);
   titleCardEl.append(titleEl);
   // console.log(teamEl);
@@ -319,13 +321,14 @@ function getPlayerStats(stats) {
 }
 
 //This function displays a link to TicketMaster for the selected game 
-function displayGameLink (gameName, gameLink){
-  console.log(gameName);
-  console.log(gameLink);
+function purchaseTickets (gameName, gameLink){
+  // console.log(gameName);
+  // console.log(gameLink);
+  $("#details").prepend($("<h2>").text(gameName).css({"background-color": "black", "color" : "white"}))
   var gameLinkEl = $("<a>");
-  gameLinkEl.attr({'id': "game-link", 'href': gameLink});
-  gameLinkEl.text("Buy Tickets to this Game: " + gameName);
-  $("#details").append(gameLinkEl)
+  gameLinkEl.attr('href', gameLink);
+  gameLinkEl.text("Purchase Tickets - " + gameName);
+  $("#details").append($("<button>").append(gameLinkEl))
   }
 
 function displayPlayerStats(pStatObj) {
