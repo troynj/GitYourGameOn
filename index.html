@@ -16,21 +16,19 @@
 <body class="uk-background-cover">
   <header>
     <nav>
-      <ul class="uk-flex">
+      <ul class="uk-flex-center">
         <li id="home-nav" jumpto="favorites" jumpfrom="nav"><a href="">Home</a></li>
-        <div class="uk-flex">
         <li id="search-btn"><a href="#modal" uk-toggle>Search</a></li>
         <li id="favorites-nav" jumpto="favorites" jumpfrom="nav"><a href="">Favorites</a></li>
-        </div>
       </ul>
     </nav>
   </header>
 
   <!-- <button id="myBtn"></button> -->
-  <section id="teams" class="visible uk-child-width-1-6 uk-text-center"></section>
+  <section id="teams" class="visible uk-child-width-1-6 uk-text-center"><h2 class="uk-width-1-1">Select your favorite NBA to see upcoming games & stats</h2></section>
   <section id="games" class="invisible"><h2 id="initInfo"></h2>
   </section>
-  <section id="details" class="invisible uk-flex-center uk-flex-column"><h2 id="Gameinfo"></h2><div id="wrapper"><div id="link"></div></div></section>
+  <section id="details" class="invisible uk-flex-center uk-flex-column"><h2 id="Gameinfo"></h2><div id="wrapper"></div><div id="link"></div></section>
   <section id="fav" class="invisible"></section>
 
   <div id="modal" uk-modal>
