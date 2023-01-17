@@ -16,11 +16,12 @@
 <body class="uk-background-cover">
   <header>
     <nav>
-      <ul class="uk-flex uk-flex-center">
+      <ul class="uk-flex ">
         <li id="home-btn" jumpto="favorites" jumpfrom="nav"><a href="">Home</a></li>
-        <li><a href="#modal" uk-toggle>Search</a></li>
+        <div>
+        <li id="search-btn"><a href="#modal" uk-toggle>Search</a></li>
         <li id="favorites-btn" jumpto="favorites" jumpfrom="nav"><a href="">Favorites</a></li>
-
+        </div>
       </ul>
     </nav>
   </header>
@@ -29,7 +30,7 @@
   <section id="teams" class="visible uk-child-width-1-6 uk-text-center"></section>
   <section id="games" class="invisible">
   </section>
-  <section id="details" class="invisible"></section>
+  <section id="details" class="invisible uk-flex uk-flex-column"></section>
   <section id="fav"></section>
 
   <div id="modal" uk-modal>

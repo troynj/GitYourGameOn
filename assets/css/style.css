@@ -10,10 +10,11 @@ header {
 }
 
 body {
-  top: 0;
-  left: 0;
-  width: 100%;
-  box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
 }
 
 ul {
@@ -21,15 +22,26 @@ ul {
 }
 
 nav ul {
-    display: inline;
+    display: flex;
+    justify-content: space-between;
 }
 
 nav li {
     margin-left: 15px;
     margin-right: 15px;
     font-size: 60px;
-
 }
+
+#home-btn {
+    float: left;
+}
+
+#search-btn,
+#favorites-btn {
+    float: right;
+}
+
+
 
 .visible {
     display: block;
@@ -52,6 +64,8 @@ nav li {
 }
 
 
+
+
 section ul li article {
     margin: 0px;
     padding: 0px
@@ -61,9 +75,10 @@ section ul li article {
     padding: 10px;
     border-radius: 25px;
 }
-#team-card > div > h2{
+
+#team-card>div>h2 {
     outline-offset: 5px;
-   outline: 2px solid white;
+    outline: 2px solid white;
     margin: 25px 0;
     width: 100%;
     background-color: rgba(255, 255, 255, 0.8);
@@ -85,6 +100,10 @@ article {
     border-radius: 5px;
     opacity: 95%;
 }
+.gamesContainer{
+    overflow: auto;
+    height: 75vh; 
+}
 
 #game-card {
     margin: 40px 40px 40px 40px;
@@ -94,8 +113,12 @@ body {
     -webkit-transition: background-image 0.5s ease-in-out;
     transition: background-image 0.5s ease-in-out;
 }
- 
+
 
 /* #gameLi {
     display: inline;
 } */
+
+#team-select{
+    font-size: 85%;
+}

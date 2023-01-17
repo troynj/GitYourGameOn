@@ -6,22 +6,22 @@
 //social media links
 // _embedded.events[0]._embedded.attractions[0].externalLinks
 
-// var bodyBackground = $('body');
-// var backgrounds = new Array(
-//   'url(https://images.unsplash.com/photo-1499754162586-08f451261482?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)',
-//   'url(https://images.unsplash.com/photo-1533923156502-be31530547c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)',
-//   'url(http://placekitten.com/300)',
-//   'url(http://placekitten.com/400)'
-// );
+var bodyBackground = $('body');
+var backgrounds = new Array(
+  'url(https://images.unsplash.com/photo-1499754162586-08f451261482?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)',
+  'url(https://images.unsplash.com/photo-1533923156502-be31530547c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)',
+  'url(http://placekitten.com/300)',
+  'url(http://placekitten.com/400)'
+);
 
-// var current = 0;
-// function nextBackground() {
-//   current++;
-//   current = current % backgrounds.length;
-//   header.css('background-image', backgrounds[current]);
-// }
-// setInterval(nextBackground, 3000);
-// bodyBackground.css('background-image', backgrounds[0]);
+var current = 0;
+function nextBackground() {
+  current++;
+  current = current % backgrounds.length;
+  header.css('background-image', backgrounds[current]);
+}
+setInterval(nextBackground, 3000);
+bodyBackground.css('background-image', backgrounds[0]);
 
 function tmBasketball(userSelection) {
   // console.log(userSelection);
@@ -40,12 +40,14 @@ function tmBasketball(userSelection) {
     .then((data) => {
       console.log(data);
       var gameListEl = $("<div>");
+      gameListEl.addClass('gamesContainer')
+
       data._embedded.events.forEach((el, i) => {
         //create
         var gameEl = $("<div>");
         gameEl.addClass("uk-flex-center")
         gameEl.css("background-color", "#ffffffd9");
-        gameEl.css("margin","15px 10px");
+        gameEl.css("margin", "15px 10px");
         var selectBtnEl = $("<button>");
         selectBtnEl.addClass("uk-button uk-button-secondary");
         //array deconstructor assigned values by splitting value from click event with regex
@@ -67,15 +69,21 @@ function tmBasketball(userSelection) {
         );
         //Gets the Link to the game selected
         var gameLink = data._embedded.events[i].url;
+        var gameName = data._embedded.events[i].name;
+        var time = data._embedded.events[i].dates.start.localTime;
+        var gameTime = setGameTime(time);
+        console.log(time);
+        console.log(gameTime);
 
         var nameContainer = $("<p>");
-        // nameContainer.css("display", "inline");
         nameContainer.addClass("uk-flex-inline");
-        var gameName = data._embedded.events[i].name;
+        // nameContainer.css("display", "inline");
+
+
         gameEl.append(nameContainer);
         //set
         nameContainer.text(gameName);
-        nameContainer.css("font-size","40px");
+        nameContainer.css("font-size", "40px");
         gameEl.append(nameContainer);
 
         gameEl.attr("jumpto", "details");
@@ -87,7 +95,7 @@ function tmBasketball(userSelection) {
         gameEl.attr("homeIcon", homeIcon);
         gameEl.attr("awayIcon", awayIcon);
 
-        gameEl.click(() => {
+        gameEl.click((event) => {
           // console.log(event.currentTarget.attributes[0].value);
           // console.log(event.currentTarget.attributes[1].value);
 
@@ -98,11 +106,13 @@ function tmBasketball(userSelection) {
           $("#games").empty();
           getTeamStats(home, homeIcon);
           getTeamStats(away, awayIcon);
-          displayGameLink(gameName, gameLink)
+          displayGameLink(gameName, gameLink);
+          displayGameInfo(gameName, gameTime);
+          // displayGameInfo(gameName, gameDate);
           // console.log(gameLink);
           // console.log(gameName);
 
-          
+
         });
         selectBtnEl.css("float", "right");
         selectBtnEl.text("Select");
@@ -122,6 +132,19 @@ function tmBasketball(userSelection) {
 
 
     });
+}
+
+function displayGameInfo(gameName, gameTime) {
+  var infoText = `Selected: ${gameName} at ${gameTime}`
+  var innerDiv = $("<div>");
+  innerDiv.text(infoText);
+  $("#details").append(innerDiv);
+}
+
+function setGameTime(time) {
+  var [hourString, minute] = time.split(":");
+  var hour = +hourString % 24;
+  return (hour % 12 || 12) + ":" + minute + (hour < 12 ? "AM" : "PM");
 }
 
 function setTeamNames(gameStr) {
@@ -170,6 +193,7 @@ function navigate(jumpFrom, jumpTo) {
 }
 
 
+
 var nbaTeams = {
   "Los Angeles Lakers": ["237", "472", "117"],
   "Golden State Warriors": ["115", "443", "185"],
@@ -209,10 +233,10 @@ function popTeamListing() {
 
     teamBtn.addClass("uk-flex-center@l");
     teamBtn.attr("id", "team-select");
-    teamBtn.addClass("uk-background-muted uk-padding")
+    teamBtn.addClass("uk-background-muted ")
     teamBtn.text(el);
     teamBtn.hover(() => {
-          teamBtn.addClass("uk-button-secondary");
+      teamBtn.addClass("uk-button-secondary");
 
     })
     teamBtn.mouseleave(() => {
@@ -294,9 +318,6 @@ function getTeamStats(inputTeam, icon) {
   teamEl.css("background-image", `url("${icon}")`);
   teamEl.css("text-align", "center");
   titleCardEl.css("color", "white");
-  titleCardEl.css("-webkit-text-stroke-width", "1px");
-  titleCardEl.css("-webkit-text-stroke-color", "black");
-  titleCardEl.css("background-color", "transparent")
   titleEl.text(inputTeam)
 
   $("#details").append(teamEl);
@@ -311,28 +332,35 @@ function getTeamStats(inputTeam, icon) {
   });
 }
 
+
+
 function getPlayerStats(stats) {
 
   return {
-  Player :
-    stats.first_name + " " + stats.last_name + " (" + stats.position + ")",
-  Team : stats.team.full_name,
-  PTS : stats.pts.toFixed(1),
-  REB : (stats.oreb + stats.dreb).toFixed(1),
-  AST : stats.ast.toFixed(1),
-  "FG%" : (stats.fg_pct * 100).toFixed(1),
+    Player:
+      stats.first_name + " " + stats.last_name + " (" + stats.position + ")",
+    Team: stats.team.full_name,
+    PTS: stats.pts.toFixed(1),
+    REB: (stats.oreb + stats.dreb).toFixed(1),
+    AST: stats.ast.toFixed(1),
+    "FG%": (stats.fg_pct * 100).toFixed(1),
   };
 }
 
 //This function displays a link to TicketMaster for the selected game 
-function displayGameLink (gameName, gameLink){
+function displayGameLink(gameName, gameLink) {
   console.log(gameName);
   console.log(gameLink);
   var gameLinkEl = $("<a>");
-  gameLinkEl.attr({'id': "game-link", 'href': gameLink});
-  gameLinkEl.text("Buy Tickets to this Game: " + gameName);
+  gameLinkEl.attr({ 'id': "game-link", 'href': gameLink, });
+  gameLinkEl.css({
+    'background-color':"#ffffffd9",
+    'border-radius': '15px',
+    'opacity': '75%'
+  })
+  gameLinkEl.text("Buy Tickets to this Game:\n" + gameName);
   $("#details").append(gameLinkEl)
-  }
+}
 
 function displayPlayerStats(pStatObj) {
   // console.log(pStatObj.Team)
@@ -363,7 +391,7 @@ function displayPlayerStats(pStatObj) {
       titleEl.text(value);
       listEl.append(titleEl);
       playerCardEl.attr("player-card", value);
-    } else if (key === "Team"){}
+    } else if (key === "Team") { }
     else {
       listEl.text(key + ": " + value);
     }
@@ -430,15 +458,15 @@ function displayPlayerProfile(player) {
 
   $("#modal-favorite").click(() => {
     addLocalStorage(player);
-    
+
   });
-  
+
   $("#modal-close").click(() => {
-  clearSearch()
-})
+    clearSearch()
+  })
 }
 
-$("#home-btn").click(() => {navigate("nav", "teams")})
+$("#home-btn").click(() => { navigate("nav", "teams") })
 $("#modal-favorite").click(() => {
   console.log("hi")
   populateFavorites()
