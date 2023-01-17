@@ -23,6 +23,9 @@
 // setInterval(nextBackground, 3000);
 // bodyBackground.css('background-image', backgrounds[0]);
 
+// nextBackground();
+
+
 function tmBasketball(userSelection) {
   // console.log(userSelection);
   var apiKey = `apikey=9XshdGRWAPA44uov6ogAAGLaYkru76D3`;
@@ -153,8 +156,12 @@ function setIcon(dataArr) {
 }
 
 function navigate(jumpFrom, jumpTo) {
-  jumpFrom === "nav" && (jumpFrom = document.querySelector("#visible"));
-  $(`#${jumpFrom}`).toggleClass("visible invisible");
+  console.log(jumpFrom)
+  console.log(jumpTo)
+  if (jumpFrom === jumpTo) return;
+  jumpFrom === "nav"
+    ? $(".visible").toggleClass("visible invisible")
+    : $(`#${jumpFrom}`).toggleClass("visible invisible");
   $(`#${jumpTo}`).toggleClass("visible invisible");
 }
 
@@ -258,6 +265,9 @@ function getPlayerId(playerSearched, team, playerStatsType) {
 
   fetch(requestUrl)
     .then((response) => {
+      if (response.status != 200) {
+        console.log(response.status);
+      }
       return response.json();
     })
     .then((stats) => {
@@ -309,15 +319,57 @@ function getPlayerStats(stats) {
   };
 }
 
+//This function displays a link to TicketMaster for the selected game
+
+function displayGameLink(gameName, gameLink) {
+  // console.log(gameName);
+  // console.log(gameLink);
+  var gameLinkEl = $("<a>");
+
+  gameLinkEl.attr("href", gameLink);
+  gameLinkEl.text("Purchase Tickets - " + gameName).css({
+    "background-color": "black",
+    color: "white",
+  });
+  $("#link").append(gameLinkEl);
+}
+
+// code clean up. This function was nested within the other function already, solved in merge editor
+
+// function purchaseTickets(gameName, gameLink) {
+//   // console.log(gameName);
+//   // console.log(gameLink);
+//   $("link").prepend($("<h2>").text(gameName).css({ "background-color": "black", "color": "white" }))
+//   var gameLinkEl = $("<a>");
+//   gameLinkEl.attr('href', gameLink);
+//   gameLinkEl.text("Purchase Tickets - " + gameName);
+//   $("#details").append($("<button>").append(gameLinkEl))
+// }
+
 function displayPlayerStats(pStatObj) {
   // console.log(pStatObj.Team)
 
   //Creating an element
   // console.log(pStatObj);
+  var savedFav = false;
+  var favArr = getLocalStorage() ?? [];
   var teamEl = $(`[team="${pStatObj.Team}"]`);
+
+  console.log(favArr);
 
   var playerCardEl = $("<article>");
   var pstatsUl = $("<ul>");
+
+  //beginning of star code
+  var starBtnEl = $("<i>");
+  starBtnEl.addClass("fas fa-star");
+  // starBtnEl.click(() => {
+  //   getPlayerId(pStatObj.Team, pStatObj.Name, "long");
+  // })
+  playerCardEl.append(starBtnEl);
+  //end of star code
+
+  playerCardEl.css("position", "relative");
   teamEl.attr("id", "team-card");
 
   pstatsUl.css("background-color", "#ffffffd9");
@@ -331,6 +383,7 @@ function displayPlayerStats(pStatObj) {
   Object.entries(pStatObj).forEach(([key, value]) => {
     //create element
     var listEl = $("<li>");
+
     //Set the element with the stat or the name
 
     if (key === "Player") {
@@ -339,6 +392,20 @@ function displayPlayerStats(pStatObj) {
       titleEl.text(value);
       listEl.append(titleEl);
       playerCardEl.attr("player-card", value);
+
+      favArr.forEach((el) => {
+        Object.entries(el).forEach(([lsKey, lsVal]) => {
+          var nameArr = value.split(" ");
+          var frankenstein = nameArr[0] + " " + nameArr[1];
+          console.log(frankenstein);
+          console.log(lsVal);
+          console.log(lsKey);
+          if (lsKey === "Name" && lsVal === frankenstein) {
+            console.log(lsVal);
+            starBtnEl.css("color", "#ffc400");
+          }
+        });
+      });
     } else if (key === "Team") {
     } else {
       listEl.text(key + ": " + value);
@@ -364,10 +431,16 @@ function populateTeamList() {
     optionListEl.text(el);
     playerSelectEl.append(optionListEl);
   });
+
   submitBtn.text("Submit");
+  // submitBtn.onfocus(alert("run"))
   submitBtn.click(function (event) {
     event.preventDefault();
-    getPlayerId(playerInputEl.val(), playerSelectEl.val(), "long");
+    if (!playerInputEl.val()) {
+      playerInputEl.attr("placeholder", "Enter A Name!");
+    } else {
+      getPlayerId(playerInputEl.val(), playerSelectEl.val(), "long");
+    }
   });
 
   $("#search").append(lookupFormEl);
@@ -408,6 +481,14 @@ function displayPlayerProfile(player) {
   });
 
   $("#modal-close").click(() => {
+    // var current = document.querySelector(".visible");
+    // if (current.id === "fav") {
+    //   location.reload();
+  
+    //   navigate("teams", "fav");
+
+    // console.log("hi")
+    // }
     clearSearch();
   });
 }
@@ -418,8 +499,15 @@ $("#home-nav").click(() => {
 
 $("#favorites-nav").click((event) => {
   event.preventDefault();
-  populateFavorites();
-  // navigate("nav", "fav")
+  var current = document.querySelector(".visible");
+  console.log(current);
+  if (current.id === "fav") {
+    return;
+  } else {
+    populateFavorites();
+    navigate("nav", "fav");
+    displayFavorites();
+  }
 });
 
 function clearSearch() {
@@ -436,10 +524,34 @@ function populateFavorites() {
   console.log(player);
 }
 
-function addLocalStorage(addToStorage) {
+function subLocalStorage(subLS) {
+  var storage = getLocalStorage() ?? []
+  var newStorage
+  console.log(storage)
+  Object.entries(storage).forEach(([key, value]) => {
+    
+    console.log(value)
+    
+    // console.log(subLS === value.Name)
+    if (subLS === value.Name){
+      console.log("entered")
+      // //delete still leaves null values in object
+      // delete storage[key]
+    }
+    else {
+      newStorage.push([key, value])
+
+    }
+  })
+ 
+  storage && setLocalStorage(storage);
+}
+
+function addLocalStorage(addLS) {
   var storage = getLocalStorage() ?? [];
-  storage.push(addToStorage);
-  window.localStorage.removeItem('favoritePlayersStringify')  
+  storage.push(addLS);
+  window.localStorage.removeItem("favoritePlayersStringify");
+  $("#fav").empty()
   setLocalStorage(storage);
 }
 
@@ -459,6 +571,8 @@ function getLocalStorage() {
 function init() {
   popTeamListing();
   populateTeamList();
+  subLocalStorage("LeBron James")
+  console.log(getLocalStorage())
 }
 
 init();
