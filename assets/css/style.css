@@ -1,6 +1,4 @@
-/* section{
-    outline: 2px solid black;
-} */
+
 * {
     font-family: 'Bebas Neue', cursive;
 }
@@ -10,12 +8,14 @@ header {
 }
 
 body {
-    height: 100vh;
+    height: 100%;
+    min-height: 100vh;
     top: 0;
     left: 0;
     width: 100%;
     box-shadow: 0 0 200px rgba(0, 0, 0, 0.9) inset;
 }
+
 
 ul {
     list-style: none;
@@ -100,7 +100,7 @@ section ul li article {
 }
 
 #team-card>div>h2 {
-    outline-offset: 5px;
+    outline-offset: 0px;
     outline: 2px solid white;
     margin: 25px 0;
     width: 100%;
@@ -148,6 +148,7 @@ body {
     font-size: 85%;
 }
 
+
 i{
         position: absolute;
         bottom: 50px;
@@ -158,5 +159,11 @@ i{
 @media screen and (min-width: 1000px) {
     #team-btn {
       width: 100%;
+    }
+    nav ul {
+        justify-content: space-around;
+    }
+    #wrapper {
+        flex-direction: column;
     }
   }

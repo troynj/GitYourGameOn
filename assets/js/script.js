@@ -9,19 +9,20 @@
 // var bodyBackground = $('body');
 // var backgrounds = new Array(
 //   'url(https://images.unsplash.com/photo-1499754162586-08f451261482?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80)',
-//   // 'url()',
-//   // 'url()',
 //   'url(https://images.unsplash.com/photo-1533923156502-be31530547c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80)'
 // );
-
 // var current = 0;
+
 // function nextBackground() {
 //   current++;
 //   current = current % backgrounds.length;
-//   header.css('background-image', backgrounds[current]);
+//   bodyBackground.css('background-image', backgrounds[current]);
 // }
-// setInterval(nextBackground, 3000);
+// setInterval(nextBackground, 5000);
 // bodyBackground.css('background-image', backgrounds[0]);
+
+// nextBackground();
+
 
 function tmBasketball(userSelection) {
   // console.log(userSelection);
@@ -345,28 +346,34 @@ function getPlayerStats(stats) {
   };
 }
 
+
 //This function displays a link to TicketMaster for the selected game
+
 function displayGameLink(gameName, gameLink) {
   // console.log(gameName);
   // console.log(gameLink);
   var gameLinkEl = $("<a>");
-  gameLinkEl.attr("href", gameLink);
+
+  gameLinkEl.attr('href', gameLink);
   gameLinkEl.text("Purchase Tickets - " + gameName).css({
     "background-color": "black",
-    color: "white",
+    "color": "white"
   });
-  $("link").append(gameLinkEl);
-
-  // function purchaseTickets(gameName, gameLink) {
-  //   // console.log(gameName);
-  //   // console.log(gameLink);
-  //   $("link").prepend($("<h2>").text(gameName).css({ "background-color": "black", "color": "white" }))
-  //   var gameLinkEl = $("<a>");
-  //   gameLinkEl.attr('href', gameLink);
-  //   gameLinkEl.text("Purchase Tickets - " + gameName);
-  //   $("#details").append($("<button>").append(gameLinkEl))
-  // }
+  $("#link").append(gameLinkEl);
 }
+
+
+// code clean up. This function was nested within the other function already, solved in merge editor
+
+// function purchaseTickets(gameName, gameLink) {
+//   // console.log(gameName);
+//   // console.log(gameLink);
+//   $("link").prepend($("<h2>").text(gameName).css({ "background-color": "black", "color": "white" }))
+//   var gameLinkEl = $("<a>");
+//   gameLinkEl.attr('href', gameLink);
+//   gameLinkEl.text("Purchase Tickets - " + gameName);
+//   $("#details").append($("<button>").append(gameLinkEl))
+// }
 
 function displayPlayerStats(pStatObj) {
   // console.log(pStatObj.Team)
@@ -568,6 +575,7 @@ function getLocalStorage() {
     return JSON.parse(localStorage.getItem("favoritePlayersStringify"));
   }
 }
+
 
 function init() {
   popTeamListing();
