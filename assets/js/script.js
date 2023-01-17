@@ -194,6 +194,11 @@ function setIcon(dataArr) {
 }
 
 function navigate(jumpFrom, jumpTo) {
+
+  //console.log(jumpFrom)
+  //console.log(jumpTo)
+  //if (jumpFrom === jumpTo) return;
+
   jumpFrom === "nav"
     ? $(".visible").toggleClass("visible invisible")
     : $(`#${jumpFrom}`).toggleClass("visible invisible");
@@ -303,6 +308,9 @@ function getPlayerId(playerSearched, team, playerStatsType) {
 
   fetch(requestUrl)
     .then((response) => {
+      if (response.status != 200) {
+        console.log(response.status);
+      }
       return response.json();
     })
     .then((stats) => {
@@ -361,15 +369,18 @@ function getPlayerStats(stats) {
 
 //This function displays a link to TicketMaster for the selected game
 
-// function displayGameLink(gameDate, gameLink) {
-//   // console.log(gameName);
-//   // console.log(gameLink);
-//   var gameLinkEl = $("<a>");
+function displayGameLink(gameName, gameLink) {
+  // console.log(gameName);
+  // console.log(gameLink);
+  var gameLinkEl = $("<a>");
 
-//   gameLinkEl.attr('href', gameLink);
-//   gameLinkEl.text("Purchase Tickets - " + gameDate);
-//   $("#link").append(gameLinkEl);
-// }
+  gameLinkEl.attr("href", gameLink);
+  gameLinkEl.text("Purchase Tickets - " + gameName).css({
+    "background-color": "black",
+    color: "white",
+  });
+  $("#link").append(gameLinkEl);
+}
 
 
 // code clean up. This function was nested within the other function already, solved in merge editor
@@ -389,10 +400,12 @@ function displayPlayerStats(pStatObj) {
   //Creating an element
   // console.log(pStatObj);
   var savedFav = false;
-  var favArr = getLocalStorage() ?? []
+
+  var favArr = getLocalStorage() ?? [];
   var teamEl = $(`[team="${pStatObj.Team}"]`);
 
-  // console.log(favArr)
+  console.log(favArr);
+
 
   var playerCardEl = $("<article>");
   var pstatsUl = $("<ul>");
@@ -423,6 +436,10 @@ function displayPlayerStats(pStatObj) {
 
 
     //Set the element with the stat or the name
+
+
+
+    //Set the element with the stat or the name
     var favPlayer = $("<button>");
     favPlayer.text();
     if (key === "Player") {
@@ -434,6 +451,7 @@ function displayPlayerStats(pStatObj) {
 
       favArr.forEach((el) => {
         Object.entries(el).forEach(([lsKey, lsVal]) => {
+
           var nameArr = value.split(" ")
           var frankenstein = nameArr[0] + " " + nameArr[1]
           // console.log(frankenstein)
@@ -446,6 +464,7 @@ function displayPlayerStats(pStatObj) {
 
         })
       })
+
     } else if (key === "Team") {
     } else {
       listEl.text(key + ": " + value);
@@ -472,10 +491,16 @@ function populateTeamList() {
     optionListEl.text(el);
     playerSelectEl.append(optionListEl);
   });
+
   submitBtn.text("Submit");
+  // submitBtn.onfocus(alert("run"))
   submitBtn.click(function (event) {
     event.preventDefault();
-    getPlayerId(playerInputEl.val(), playerSelectEl.val(), "long");
+    if (!playerInputEl.val()) {
+      playerInputEl.attr("placeholder", "Enter A Name!");
+    } else {
+      getPlayerId(playerInputEl.val(), playerSelectEl.val(), "long");
+    }
   });
 
   $("#search").append(lookupFormEl);
@@ -515,6 +540,14 @@ function displayPlayerProfile(player) {
   });
 
   $("#modal-close").click(() => {
+    // var current = document.querySelector(".visible");
+    // if (current.id === "fav") {
+    //   location.reload();
+  
+    //   navigate("teams", "fav");
+
+    // console.log("hi")
+    // }
     clearSearch();
   });
 }
@@ -525,9 +558,17 @@ $("#home-nav").click(() => {
 
 $("#favorites-nav").click((event) => {
   event.preventDefault();
-  populateFavorites();
-  navigate("nav", "fav");
-  displayFavorites();
+
+  var current = document.querySelector(".visible");
+  console.log(current);
+  if (current.id === "fav") {
+    return;
+  } else {
+    populateFavorites();
+    navigate("nav", "fav");
+    displayFavorites();
+  }
+
 });
 
 function displayFavorites() {
@@ -576,10 +617,36 @@ function populateFavorites() {
   // console.log(player);
 }
 
-function addLocalStorage(addToStorage) {
+function subLocalStorage(subLS) {
+  var storage = getLocalStorage() ?? []
+  var newStorage
+  console.log(storage)
+  Object.entries(storage).forEach(([key, value]) => {
+    
+    console.log(value)
+    
+    // console.log(subLS === value.Name)
+    if (subLS === value.Name){
+      console.log("entered")
+      // //delete still leaves null values in object
+      // delete storage[key]
+    }
+    else {
+      newStorage.push([key, value])
+
+    }
+  })
+ 
+  storage && setLocalStorage(storage);
+}
+
+function addLocalStorage(addLS) {
   var storage = getLocalStorage() ?? [];
-  storage.push(addToStorage);
+
+  storage.push(addLS);
   window.localStorage.removeItem("favoritePlayersStringify");
+  $("#fav").empty()
+
   setLocalStorage(storage);
 }
 
@@ -600,6 +667,8 @@ function getLocalStorage() {
 function init() {
   popTeamListing();
   populateTeamList();
+  subLocalStorage("LeBron James")
+  console.log(getLocalStorage())
 }
 
 init();
