@@ -38,11 +38,11 @@ function tmBasketball(userSelection) {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      // console.log(data);
       // _embedded.events[0].dates.start.localDate
       // _embedded.events[0].dates.start.localDate
       var gameListEl = $("<div>");
-      gameListEl.addClass('gamesContainer')
+      gameListEl.addClass("gamesContainer");
 
       data._embedded.events.forEach((el, i) => {
         //create
@@ -75,13 +75,12 @@ function tmBasketball(userSelection) {
         var gameName = data._embedded.events[i].name;
         var time = data._embedded.events[i].dates.start.localTime;
         var gameTime = setGameTime(time);
-        console.log(time);
-        console.log(gameTime);
+        // console.log(time);
+        // console.log(gameTime);
 
         var nameContainer = $("<p>");
         nameContainer.addClass("uk-flex-inline");
         // nameContainer.css("display", "inline");
-
 
         gameEl.append(nameContainer);
         //set
@@ -113,8 +112,6 @@ function tmBasketball(userSelection) {
           displayGameInfo(gameName, gameTime);
           // console.log(gameLink);
           // console.log(gameName);
-
-
         });
         selectBtnEl.css("float", "right");
         selectBtnEl.text("Select");
@@ -126,7 +123,7 @@ function tmBasketball(userSelection) {
 
         // adds game date to games page
         var gameDate = data._embedded.events[i].dates.start.localDate;
-        console.log(gameDate);
+        // console.log(gameDate);
 
         gameEl.append(gameDate);
       });
@@ -134,7 +131,7 @@ function tmBasketball(userSelection) {
 }
 
 function displayGameInfo(gameName, gameTime) {
-  var infoText = `Selected: ${gameName} at ${gameTime}`
+  var infoText = `Selected: ${gameName} at ${gameTime}`;
   var innerDiv = $("<div>");
   innerDiv.text(infoText);
   $("#Gameinfo").append(innerDiv);
@@ -192,8 +189,6 @@ function navigate(jumpFrom, jumpTo) {
   $(`#${jumpTo}`).toggleClass("visible invisible");
 }
 
-
-
 var nbaTeams = {
   "Los Angeles Lakers": ["237", "472", "117"],
   "Golden State Warriors": ["115", "443", "185"],
@@ -233,12 +228,11 @@ function popTeamListing() {
 
     teamBtn.addClass("uk-flex-center@l");
     teamBtn.attr("id", "team-select");
-    teamBtn.addClass("uk-background-muted team-btn")
+    teamBtn.addClass("uk-background-muted team-btn");
     teamBtn.text(el);
     teamBtn.hover(() => {
       teamBtn.addClass("uk-button-secondary");
-
-    })
+    });
     teamBtn.mouseleave(() => {
       teamBtn.removeClass("uk-button-secondary");
     });
@@ -249,7 +243,7 @@ function popTeamListing() {
       navigate("teams", "games");
     });
     $("#teams").append(teamBtn);
-    console.log(teamBtn.val());
+    // console.log(teamBtn.val());
   });
 }
 
@@ -318,7 +312,7 @@ function getTeamStats(inputTeam, icon) {
   teamEl.css("background-image", `url("${icon}")`);
   teamEl.css("text-align", "center");
   titleCardEl.css("color", "white");
-  titleEl.text(inputTeam)
+  titleEl.text(inputTeam);
 
   $("#wrapper").append(teamEl);
   teamEl.append(titleCardEl);
@@ -331,8 +325,6 @@ function getTeamStats(inputTeam, icon) {
     bdlStatsApi(el, "short");
   });
 }
-
-
 
 function getPlayerStats(stats) {
   return {
@@ -353,21 +345,17 @@ function getPlayerStats(stats) {
   };
 }
 
-//This function displays a link to TicketMaster for the selected game 
+//This function displays a link to TicketMaster for the selected game
 function displayGameLink(gameName, gameLink) {
-  console.log(gameName);
-  console.log(gameLink);
+  // console.log(gameName);
+  // console.log(gameLink);
   var gameLinkEl = $("<a>");
-  gameLinkEl.attr('href', gameLink);
-  gameLinkEl.text("Purchase Tickets - " + gameName).css({ 
-    "background-color": "black", 
-    "color": "white" 
+  gameLinkEl.attr("href", gameLink);
+  gameLinkEl.text("Purchase Tickets - " + gameName).css({
+    "background-color": "black",
+    color: "white",
   });
   $("link").append(gameLinkEl);
-
-
-
-
 
   // function purchaseTickets(gameName, gameLink) {
   //   // console.log(gameName);
@@ -384,10 +372,25 @@ function displayPlayerStats(pStatObj) {
   // console.log(pStatObj.Team)
   //Creating an element
   // console.log(pStatObj);
+  var savedFav = false;
+  var favArr = getLocalStorage() ?? []
   var teamEl = $(`[team="${pStatObj.Team}"]`);
+
+  console.log(favArr)
 
   var playerCardEl = $("<article>");
   var pstatsUl = $("<ul>");
+
+  //beginning of star code
+  var starBtnEl = $("<i>");
+  starBtnEl.addClass("fas fa-star");
+  // starBtnEl.click(() => {
+  //   getPlayerId(pStatObj.Team, pStatObj.Name, "long");
+  // })
+  playerCardEl.append(starBtnEl);
+//end of star code
+
+  playerCardEl.css("position", "relative");
   teamEl.attr("id", "team-card");
 
   pstatsUl.css("background-color", "#ffffffd9");
@@ -401,24 +404,42 @@ function displayPlayerStats(pStatObj) {
   Object.entries(pStatObj).forEach(([key, value]) => {
     //create element
     var listEl = $("<li>");
-    //Set the element with the stat or the name
+    
 
+    //Set the element with the stat or the name
+    var favPlayer = $("<button>");
+    favPlayer.text();
     if (key === "Player") {
       var titleEl = $("<h3>");
       titleEl.css("margin-bottom", "0px");
       titleEl.text(value);
       listEl.append(titleEl);
       playerCardEl.attr("player-card", value);
-    } else if (key === "Team") { }
-    else {
+
+      favArr.forEach((el) => {
+        Object.entries(el).forEach(([lsKey, lsVal]) => {
+          var nameArr = value.split(" ")
+          var frankenstein = nameArr[0] + " " + nameArr[1]
+          console.log(frankenstein)
+          console.log(lsVal)
+          console.log(lsKey)
+          if(lsKey === "Name" && lsVal === frankenstein ) {
+            console.log(lsVal)
+            starBtnEl.css("color", "#ffc400")
+          }
+
+        })
+      })
+    } else if (key === "Team") {
+    } else {
       listEl.text(key + ": " + value);
     }
     //Append the ul element with the stat or name
     pstatsUl.append(listEl);
     pstatsUl.css("list-style", "none");
+
   });
 }
-
 
 /* This function dynamically populates the drop down list of teams by reference the 
   nbaTeams object*/
@@ -475,9 +496,7 @@ function displayPlayerProfile(player) {
 
   $("#modal-favorites").click(() => {
     addLocalStorage(player);
-
   });
-
 
   $("#modal-close").click(() => {
     clearSearch();
