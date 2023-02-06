@@ -1,0 +1,36 @@
+import { listTeams } from ("./team/team.js");
+
+const nbaTeams = {
+  "Los Angeles Lakers": ["237", "472", "117"],
+  "Golden State Warriors": ["115", "443", "185"],
+  "Phoenix Suns": ["57", "367", "22"],
+  "Portland Trail Blazers": ["278", "419", "349"],
+  "LA Clippers": ["274", "172", "467"],
+  "Dallas Mavericks": ["132", "486", "38017679"],
+  "Denver Nuggets": ["246", "335", "375"],
+  "Utah Jazz": ["297", "100", "413"],
+  "Memphis Grizzlies": ["666786", "231", "3"],
+  "Sacramento Kings": ["161", "30", "38017688"],
+  "New Orleans Pelicans": ["666969", "303", "455"],
+  "Minnesota Timberwolves": ["3547238", "176", "447"],
+  "Houston Rockets": ["17895966", "38017684", " 666849"],
+  "San Antonio Spurs": ["666682", "373", "3547274"],
+  "Oklahoma City Thunder": ["175", "17896065", "666541"],
+  "Boston Celtics": ["434", "70", "219"],
+  "Brooklyn Nets": ["140", "228", "417"],
+  "Milwaukee Bucks": ["15", "315", "214"],
+  "New York Knicks": ["73", "387", "399"],
+  "Cleveland Cavaliers": ["666581", "285", "322"],
+  "Chicago Bulls": ["268", "125", "460"],
+  "Philadelphia 76ers": ["192", "145", "3547254"],
+  "Miami Heat": ["79", "666633", "4"],
+  "Toronto Raptors": ["416", "17896055", "458"],
+  "Washington Wizards": ["378", "37", "265"],
+  "Atlanta Hawks": ["490", "101", "334"],
+  "Indiana Pacers": ["3547245", "452", "210"],
+  "Charlotte Hornets": ["3547239", "204", "403"],
+  "Detroit Pistons": ["17896075", "54", "3547241"],
+  "Orlando Magic": ["28", "38017683", "165"],
+};
+
+listTeams(nbaTeams);
